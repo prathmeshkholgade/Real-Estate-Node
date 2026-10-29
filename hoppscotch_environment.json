@@ -1,0 +1,31 @@
+{
+  "name": "Real Estate Local",
+  "variables": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "secret": false
+    },
+    {
+      "key": "token",
+      "value": "",
+      "secret": true
+    },
+    {
+      "key": "propertyId",
+      "value": "1",
+      "secret": false
+    },
+    {
+      "key": "mediaId",
+      "value": "1",
+      "secret": false
+    },
+    {
+      "key": "docId",
+      "value": "1",
+      "secret": false
+    }
+  ]
+}
+

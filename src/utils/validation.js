@@ -76,6 +76,44 @@ const propertyIdParamSchema = Joi.object({
         }),
 });
 
+const propertyMediaParamSchema = Joi.object({
+    id: Joi.number()
+        .integer()
+        .positive()
+        .required()
+        .messages({
+            "number.base": "Property ID must be a valid number",
+            "any.required": "Property ID is required in URL parameter",
+        }),
+    mediaId: Joi.number()
+        .integer()
+        .positive()
+        .required()
+        .messages({
+            "number.base": "Media ID must be a valid number",
+            "any.required": "Media ID is required in URL parameter",
+        }),
+});
+
+const propertyDocumentParamSchema = Joi.object({
+    id: Joi.number()
+        .integer()
+        .positive()
+        .required()
+        .messages({
+            "number.base": "Property ID must be a valid number",
+            "any.required": "Property ID is required in URL parameter",
+        }),
+    docId: Joi.number()
+        .integer()
+        .positive()
+        .required()
+        .messages({
+            "number.base": "Document ID must be a valid number",
+            "any.required": "Document ID is required in URL parameter",
+        }),
+});
+
 
 const PROPERTY_TYPES = [
     "apartment",
@@ -472,6 +510,7 @@ const singleMediaItemSchema = Joi.object({
 
 const propertyMediaSchema = Joi.alternatives().try(
     singleMediaItemSchema,
+    Joi.array().items(singleMediaItemSchema).min(1),
     Joi.object({
         media: Joi.array().items(singleMediaItemSchema).min(1).required().messages({
             "array.min": "At least one media item must be provided",
@@ -533,6 +572,7 @@ const singleDocumentItemSchema = Joi.object({
 
 const propertyDocumentSchema = Joi.alternatives().try(
     singleDocumentItemSchema,
+    Joi.array().items(singleDocumentItemSchema).min(1),
     Joi.object({
         documents: Joi.array().items(singleDocumentItemSchema).min(1).required().messages({
             "array.min": "At least one document must be provided",
@@ -540,7 +580,6 @@ const propertyDocumentSchema = Joi.alternatives().try(
         }),
     })
 );
-
 
 const submitPropertySchema = Joi.object({
     status: Joi.string()
@@ -554,6 +593,8 @@ module.exports = {
     userSchema,
     loginSchema,
     propertyIdParamSchema,
+    propertyMediaParamSchema,
+    propertyDocumentParamSchema,
     createPropertyBasicInfoSchema,
     updatePropertyBasicInfoSchema,
     propertyDetailSchema,

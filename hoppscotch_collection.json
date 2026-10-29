@@ -1,0 +1,390 @@
+[
+  {
+    "v": 2,
+    "name": "Real Estate Backend API",
+    "folders": [
+      {
+        "v": 2,
+        "name": "1. Authentication",
+        "folders": [],
+        "requests": [
+          {
+            "v": "1",
+            "name": "Create User (Register)",
+            "method": "POST",
+            "endpoint": "<<baseUrl>>/auth/create-user",
+            "params": [],
+            "headers": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "active": true
+              }
+            ],
+            "preRequestScript": "",
+            "testScript": "if (pw.response.status === 201) {\n  const res = JSON.parse(pw.response.body);\n  if (res.data && res.data.token) {\n    pw.env.set('token', res.data.token);\n  }\n}",
+            "auth": {
+              "authType": "none",
+              "authActive": true
+            },
+            "body": {
+              "contentType": "application/json",
+              "body": "{\n  \"fullName\": \"Prathmesh Kholgade\",\n  \"email\": \"prathmesh@example.com\",\n  \"phone\": \"9876543210\",\n  \"password\": \"Password123\",\n  \"role_id\": 1\n}"
+            }
+          },
+          {
+            "v": "1",
+            "name": "Login",
+            "method": "POST",
+            "endpoint": "<<baseUrl>>/auth/login",
+            "params": [],
+            "headers": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "active": true
+              }
+            ],
+            "preRequestScript": "",
+            "testScript": "if (pw.response.status === 200) {\n  const res = JSON.parse(pw.response.body);\n  if (res.token) {\n    pw.env.set('token', res.token);\n  }\n}",
+            "auth": {
+              "authType": "none",
+              "authActive": true
+            },
+            "body": {
+              "contentType": "application/json",
+              "body": "{\n  \"email\": \"prathmesh@example.com\",\n  \"password\": \"Password123\"\n}"
+            }
+          }
+        ],
+        "auth": {
+          "authType": "inherit",
+          "authActive": true
+        },
+        "headers": []
+      },
+      {
+        "v": 2,
+        "name": "2. Property Wizard",
+        "folders": [
+          {
+            "v": 2,
+            "name": "Step 1 - Basic Info",
+            "folders": [],
+            "requests": [
+              {
+                "v": "1",
+                "name": "1.1 Create Property (Draft)",
+                "method": "POST",
+                "endpoint": "<<baseUrl>>/property",
+                "params": [],
+                "headers": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "active": true
+                  }
+                ],
+                "preRequestScript": "",
+                "testScript": "if (pw.response.status === 201) {\n  const res = JSON.parse(pw.response.body);\n  if (res.data && res.data.property_id) {\n    pw.env.set('propertyId', String(res.data.property_id));\n  }\n}",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<token>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": "application/json",
+                  "body": "{\n  \"title\": \"Luxury 3BHK Sea Facing Apartment\",\n  \"description\": \"Premium sea-facing apartment located in the prime area of Bandra with balcony view.\",\n  \"property_type\": \"apartment\",\n  \"listing_type\": \"sale\",\n  \"price\": 25000000,\n  \"address\": \"42, Bandstand Promenade\",\n  \"locality\": \"Bandra West\",\n  \"city\": \"Mumbai\",\n  \"state\": \"Maharashtra\",\n  \"country\": \"India\",\n  \"postal_code\": \"400050\"\n}"
+                }
+              },
+              {
+                "v": "1",
+                "name": "1.2 Update Property Basic Info",
+                "method": "PATCH",
+                "endpoint": "<<baseUrl>>/property/<<propertyId>>",
+                "params": [],
+                "headers": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "active": true
+                  }
+                ],
+                "preRequestScript": "",
+                "testScript": "",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<token>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": "application/json",
+                  "body": "{\n  \"price\": 24500000,\n  \"description\": \"Updated description with promotional festive pricing.\"\n}"
+                }
+              }
+            ],
+            "auth": {
+              "authType": "inherit",
+              "authActive": true
+            },
+            "headers": []
+          },
+          {
+            "v": 2,
+            "name": "Step 2 - Details",
+            "folders": [],
+            "requests": [
+              {
+                "v": "1",
+                "name": "2.1 Upsert Property Details",
+                "method": "PATCH",
+                "endpoint": "<<baseUrl>>/property/<<propertyId>>/details",
+                "params": [],
+                "headers": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "active": true
+                  }
+                ],
+                "preRequestScript": "",
+                "testScript": "",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<token>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": "application/json",
+                  "body": "{\n  \"area\": 1450.5,\n  \"area_unit\": \"sq.ft\",\n  \"built_up_area\": 1600.0,\n  \"carpet_area\": 1320.0,\n  \"bedrooms\": 3,\n  \"bathrooms\": 3,\n  \"balconies\": 2,\n  \"total_floors\": 18,\n  \"property_floor\": 12,\n  \"furnishing_status\": \"semi-furnished\",\n  \"condition\": \"ready_to_move\"\n}"
+                }
+              }
+            ],
+            "auth": {
+              "authType": "inherit",
+              "authActive": true
+            },
+            "headers": []
+          },
+          {
+            "v": 2,
+            "name": "Step 3 - Configuration",
+            "folders": [],
+            "requests": [
+              {
+                "v": "1",
+                "name": "3.1 Upsert Property Configuration & Amenities",
+                "method": "PATCH",
+                "endpoint": "<<baseUrl>>/property/<<propertyId>>/configuration",
+                "params": [],
+                "headers": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "active": true
+                  }
+                ],
+                "preRequestScript": "",
+                "testScript": "",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<token>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": "application/json",
+                  "body": "{\n  \"facing\": \"East\",\n  \"ownership_type\": \"freehold\",\n  \"possession_status\": \"ready_to_move\",\n  \"parking_count\": 2,\n  \"gated_community\": true,\n  \"water_supply\": \"both\",\n  \"power_backup\": true,\n  \"amenity_ids\": [1, 2, 3]\n}"
+                }
+              }
+            ],
+            "auth": {
+              "authType": "inherit",
+              "authActive": true
+            },
+            "headers": []
+          },
+          {
+            "v": 2,
+            "name": "Step 4 - Media",
+            "folders": [],
+            "requests": [
+              {
+                "v": "1",
+                "name": "4.1 Upload Media (Batch or Single)",
+                "method": "POST",
+                "endpoint": "<<baseUrl>>/property/<<propertyId>>/media",
+                "params": [],
+                "headers": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "active": true
+                  }
+                ],
+                "preRequestScript": "",
+                "testScript": "if (pw.response.status === 201) {\n  const res = JSON.parse(pw.response.body);\n  if (res.data && res.data.media && res.data.media.length > 0) {\n    pw.env.set('mediaId', String(res.data.media[0].id));\n  }\n}",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<token>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": "application/json",
+                  "body": "{\n  \"media\": [\n    {\n      \"media_type\": \"image\",\n      \"file_url\": \"https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1000&q=80\",\n      \"thumbnail_url\": \"https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=200&q=80\",\n      \"original_name\": \"living_room.jpg\",\n      \"mime_type\": \"image/jpeg\",\n      \"file_size\": 2048500,\n      \"is_primary\": true,\n      \"sort_order\": 1\n    },\n    {\n      \"media_type\": \"floor_plan\",\n      \"file_url\": \"https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=80\",\n      \"original_name\": \"floor_plan_3bhk.jpg\",\n      \"mime_type\": \"image/jpeg\",\n      \"file_size\": 1540000,\n      \"is_primary\": false,\n      \"sort_order\": 2\n    }\n  ]\n}"
+                }
+              },
+              {
+                "v": "1",
+                "name": "4.2 Delete Media Item",
+                "method": "DELETE",
+                "endpoint": "<<baseUrl>>/property/<<propertyId>>/media/<<mediaId>>",
+                "params": [],
+                "headers": [],
+                "preRequestScript": "",
+                "testScript": "",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<token>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": null,
+                  "body": null
+                }
+              }
+            ],
+            "auth": {
+              "authType": "inherit",
+              "authActive": true
+            },
+            "headers": []
+          },
+          {
+            "v": 2,
+            "name": "Step 5 - Documents",
+            "folders": [],
+            "requests": [
+              {
+                "v": "1",
+                "name": "5.1 Upload Documents (Batch or Single)",
+                "method": "POST",
+                "endpoint": "<<baseUrl>>/property/<<propertyId>>/documents",
+                "params": [],
+                "headers": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "active": true
+                  }
+                ],
+                "preRequestScript": "",
+                "testScript": "if (pw.response.status === 201) {\n  const res = JSON.parse(pw.response.body);\n  if (res.data && res.data.documents && res.data.documents.length > 0) {\n    pw.env.set('docId', String(res.data.documents[0].id));\n  }\n}",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<token>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": "application/json",
+                  "body": "{\n  \"documents\": [\n    {\n      \"document_type\": \"title_deed\",\n      \"file_url\": \"https://example.com/docs/title_deed.pdf\",\n      \"original_name\": \"title_deed.pdf\",\n      \"mime_type\": \"application/pdf\",\n      \"file_size\": 1048576\n    },\n    {\n      \"document_type\": \"occupancy_certificate\",\n      \"file_url\": \"https://example.com/docs/occupancy_certificate.pdf\",\n      \"original_name\": \"oc_certificate.pdf\",\n      \"mime_type\": \"application/pdf\",\n      \"file_size\": 524288\n    }\n  ]\n}"
+                }
+              },
+              {
+                "v": "1",
+                "name": "5.2 Delete Document Item",
+                "method": "DELETE",
+                "endpoint": "<<baseUrl>>/property/<<propertyId>>/documents/<<docId>>",
+                "params": [],
+                "headers": [],
+                "preRequestScript": "",
+                "testScript": "",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<token>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": null,
+                  "body": null
+                }
+              }
+            ],
+            "auth": {
+              "authType": "inherit",
+              "authActive": true
+            },
+            "headers": []
+          },
+          {
+            "v": 2,
+            "name": "Step 6 - Submit & Review",
+            "folders": [],
+            "requests": [
+              {
+                "v": "1",
+                "name": "6.1 Get Full Wizard State & Progress",
+                "method": "GET",
+                "endpoint": "<<baseUrl>>/property/<<propertyId>>",
+                "params": [],
+                "headers": [],
+                "preRequestScript": "",
+                "testScript": "",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<token>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": null,
+                  "body": null
+                }
+              },
+              {
+                "v": "1",
+                "name": "6.2 Final Submit Property",
+                "method": "POST",
+                "endpoint": "<<baseUrl>>/property/<<propertyId>>/submit",
+                "params": [],
+                "headers": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "active": true
+                  }
+                ],
+                "preRequestScript": "",
+                "testScript": "",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<token>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": "application/json",
+                  "body": "{\n  \"status\": \"submitted\",\n  \"remarks\": \"All legal documents and photos uploaded. Ready for verification.\"\n}"
+                }
+              }
+            ],
+            "auth": {
+              "authType": "inherit",
+              "authActive": true
+            },
+            "headers": []
+          }
+        ],
+        "requests": [],
+        "auth": {
+          "authType": "inherit",
+          "authActive": true
+        },
+        "headers": []
+      }
+    ],
+    "requests": [],
+    "auth": {
+      "authType": "inherit",
+      "authActive": true
+    },
+    "headers": []
+  }
+]
