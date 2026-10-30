@@ -11,6 +11,7 @@ const {
     upsertPropertyConfiguration,
     addPropertyMedia,
     addPropertyDocuments,
+    getAllProperties,
 } = require("../controller/property_controller");
 const {
     propertyIdParamSchema,
@@ -20,10 +21,15 @@ const {
     propertyConfigurationSchema,
     propertyMediaSchema,
     propertyDocumentSchema,
-    submitPropertySchema,
 } = require("../utils/validation");
 const router = express.Router();
 
+
+router.get(
+    "/",
+    verifyUser,
+    asyncWrap(getAllProperties)
+);
 
 router.get(
     "/:id",

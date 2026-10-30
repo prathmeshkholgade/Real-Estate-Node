@@ -5,12 +5,71 @@ const {
     PropertyConfiguration,
     PropertyMedia,
     PropertyDocument,
+    Amenity
 } = require("../models");
 const { findOwnedPropertyOrThrow } = require("../utils/helper");
-
 const uploadToCloudinary = require("../utils/upload_to_cloudinary");
 
 
+const getAllPropertiesService = async (userId, query) => {
+    const page = Math.max(1, Number(query.page) || 1);
+
+    const limit = Math.min(
+        100,
+        Math.max(1, Number(query.limit) || 10)
+    );
+    const offset = (page - 1) * limit;
+
+    const result = await Property.findAndCountAll({
+        where: {
+            user_id: userId
+        },
+        attributes: [
+            "id",
+            "title",
+            "description",
+            "property_type",
+            "listing_type",
+            "price",
+            "current_step",
+            "createdAt"
+        ],
+        include: [
+            {
+                model: PropertyDetail,
+                as: "details",
+                attributes: [
+                    "id", "property_id", "bedrooms", "bathrooms"
+                ]
+            },
+            {
+                model: PropertyConfiguration,
+                as: "configuration",
+                attributes: ["parking_count", "possession_status", "ownership_type"]
+            },
+            {
+                model: PropertyMedia,
+                as: "media",
+                attributes: ["original_name", "file_url", "media_type"]
+            },
+        ],
+        limit,
+        offset,
+        distinct: true,
+        order: [["createdAt", "DESC"]]
+    });
+
+    return {
+        properties: result.rows,
+        pagination: {
+            totalRecords: result.count,
+            currentPage: page,
+            limit,
+            totalPages: Math.ceil(result.count / limit),
+        }
+    };
+
+}
 
 const getPropertyByIdService = async (userId, propertyId) => {
     const property = await Property.findOne({
@@ -18,9 +77,29 @@ const getPropertyByIdService = async (userId, propertyId) => {
             id: propertyId,
             user_id: userId,
         },
-        include: {
-            
-        }
+        include: [
+            {
+                model: PropertyDetail,
+                as: 'details'
+            },
+            {
+                model: PropertyConfiguration,
+                as: 'configuration'
+            },
+            {
+                model: PropertyMedia,
+                as: "media"
+            },
+            {
+                model: PropertyDocument,
+                as: "documents"
+            },
+            {
+                model: Amenity,
+                as: "amenities"
+            }
+        ]
+
     });
 
     if (!property) {
@@ -326,5 +405,10 @@ module.exports = {
     upsertPropertyConfigurationService,
     addPropertyMediaService,
     addPropertyDocumentsService,
-    getPropertyByIdService
+    getPropertyByIdService,
+    getAllPropertiesService
+
 };
+
+
+

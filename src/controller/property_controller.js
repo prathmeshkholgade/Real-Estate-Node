@@ -1,5 +1,17 @@
-const { createPropertyBasicInfoService, updatePropertyBasicInfoService, upsertPropertyDetailsService, upsertPropertyConfigurationService, addPropertyMediaService, addPropertyDocumentsService, getPropertyByIdService } = require("../services/property_service");
+const { createPropertyBasicInfoService, updatePropertyBasicInfoService, upsertPropertyDetailsService, upsertPropertyConfigurationService, addPropertyMediaService, addPropertyDocumentsService, getPropertyByIdService, getAllPropertiesService } = require("../services/property_service");
 
+const getAllProperties = async (req, res) => {
+    const result = await getAllPropertiesService(
+        req.user.id,
+        req.query
+    );
+
+    return res.status(200).json({
+        success: true,
+        message: "Properties fetched successfully",
+        data: result
+    });
+};
 
 const getPropertyById = async (req, res) => {
     const property = await getPropertyByIdService(
@@ -141,5 +153,6 @@ module.exports = {
     upsertPropertyConfiguration,
     addPropertyMedia,
     addPropertyDocuments,
-    getPropertyById
+    getPropertyById,
+    getAllProperties
 };
