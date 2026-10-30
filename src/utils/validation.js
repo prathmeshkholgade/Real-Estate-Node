@@ -498,7 +498,7 @@ const singleMediaItemSchema = Joi.object({
     file_size: Joi.number()
         .integer()
         .positive()
-        .max(524288000) // 500 MB
+        .max(524288000)
         .allow(null)
         .messages({
             "number.base": "File size must be a number (in bytes)",
@@ -562,7 +562,7 @@ const singleDocumentItemSchema = Joi.object({
     file_size: Joi.number()
         .integer()
         .positive()
-        .max(104857600) // 100 MB
+        .max(104857600)
         .allow(null)
         .messages({
             "number.base": "File size must be a number (in bytes)",
@@ -589,6 +589,100 @@ const submitPropertySchema = Joi.object({
     remarks: Joi.string().trim().max(1000).allow("", null),
 });
 
+const FACILITY_STATUSES = ["pending", "active", "inactive", "suspended"];
+
+const facilityLoginSchema = Joi.object({
+    email: Joi.string()
+        .email()
+        .required()
+        .messages({
+            "string.base": "Email must be a string",
+            "string.email": "Invalid email format",
+            "string.empty": "Email is required",
+            "any.required": "Email is required",
+        }),
+    password: Joi.string()
+        .required()
+        .messages({
+            "string.empty": "Password is required",
+            "any.required": "Password is required",
+        }),
+});
+
+const createFacilityCompanySchema = Joi.object({
+    company_name: Joi.string()
+        .trim()
+        .min(2)
+        .max(150)
+        .required()
+        .messages({
+            "string.base": "Company name must be a string",
+            "string.empty": "Company name is required",
+            "string.min": "Company name must be at least 2 characters",
+            "string.max": "Company name cannot exceed 150 characters",
+            "any.required": "Company name is required",
+        }),
+    email: Joi.string()
+        .email()
+        .required()
+        .messages({
+            "string.base": "Email must be a string",
+            "string.email": "Invalid email format",
+            "string.empty": "Email is required",
+            "any.required": "Email is required",
+        }),
+    phone: Joi.string()
+        .pattern(/^[0-9+ -]{7,20}$/)
+        .required()
+        .messages({
+            "string.base": "Phone must be a string",
+            "string.empty": "Phone is required",
+            "string.pattern.base": "Phone must be a valid phone number (7-20 digits)",
+            "any.required": "Phone is required",
+        }),
+    address: Joi.string()
+        .trim()
+        .max(1000)
+        .allow("", null)
+        .messages({
+            "string.max": "Address cannot exceed 1000 characters",
+        }),
+    password: Joi.string()
+        .min(6)
+        .max(50)
+        .allow("", null)
+        .messages({
+            "string.min": "Password must be at least 6 characters",
+            "string.max": "Password cannot exceed 50 characters",
+        }),
+    status: Joi.string()
+        .valid("active", "pending")
+        .default("active")
+        .messages({
+            "any.only": "Status must be either active or pending",
+        }),
+});
+
+const updateFacilityCompanySchema = Joi.object({
+    company_name: Joi.string().trim().min(2).max(150),
+    phone: Joi.string().pattern(/^[0-9+ -]{7,20}$/),
+    address: Joi.string().trim().max(1000).allow("", null),
+    status: Joi.string().valid(...FACILITY_STATUSES),
+}).min(1).messages({
+    "object.min": "At least one field must be provided for update",
+});
+
+const facilityIdParamSchema = Joi.object({
+    id: Joi.number()
+        .integer()
+        .positive()
+        .required()
+        .messages({
+            "number.base": "Facility ID must be a number",
+            "any.required": "Facility ID parameter is required",
+        }),
+});
+
 module.exports = {
     userSchema,
     loginSchema,
@@ -602,6 +696,11 @@ module.exports = {
     propertyMediaSchema,
     propertyDocumentSchema,
     submitPropertySchema,
+    facilityLoginSchema,
+    createFacilityCompanySchema,
+    updateFacilityCompanySchema,
+    facilityIdParamSchema,
+    FACILITY_STATUSES,
     PROPERTY_TYPES,
     LISTING_TYPES,
     AREA_UNITS,

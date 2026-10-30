@@ -372,6 +372,267 @@
             "headers": []
           }
         ],
+        "requests": [
+          {
+            "v": "1",
+            "name": "Get All User Properties (Paginated)",
+            "method": "GET",
+            "endpoint": "<<baseUrl>>/property?page=1&limit=10",
+            "params": [
+              {
+                "key": "page",
+                "value": "1",
+                "active": true
+              },
+              {
+                "key": "limit",
+                "value": "10",
+                "active": true
+              }
+            ],
+            "headers": [],
+            "preRequestScript": "",
+            "testScript": "",
+            "auth": {
+              "authType": "bearer",
+              "token": "<<token>>",
+              "authActive": true
+            },
+            "body": {
+              "contentType": null,
+              "body": null
+            }
+          }
+        ],
+        "auth": {
+          "authType": "inherit",
+          "authActive": true
+        },
+        "headers": []
+      },
+      {
+        "v": 2,
+        "name": "3. Facility Management",
+        "folders": [
+          {
+            "v": 2,
+            "name": "Facility Auth",
+            "folders": [],
+            "requests": [
+              {
+                "v": "1",
+                "name": "Facility Login",
+                "method": "POST",
+                "endpoint": "<<baseUrl>>/facility/auth/login",
+                "params": [],
+                "headers": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "active": true
+                  }
+                ],
+                "preRequestScript": "",
+                "testScript": "if (pw.response.status === 200) {\n  const res = JSON.parse(pw.response.body);\n  if (res.token) pw.env.set(\"facilityToken\", res.token);\n  if (res.data && res.data.id) pw.env.set(\"facilityId\", String(res.data.id));\n}",
+                "auth": {
+                  "authType": "none",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": "application/json",
+                  "body": "{\n  \"email\": \"contact@apexfacilities.com\",\n  \"password\": \"FacilityPass@123\"\n}"
+                }
+              }
+            ],
+            "auth": {
+              "authType": "inherit",
+              "authActive": true
+            },
+            "headers": []
+          },
+          {
+            "v": 2,
+            "name": "Property Owner - Facility Management",
+            "folders": [],
+            "requests": [
+              {
+                "v": "1",
+                "name": "Create Facility Company (Generates Creds)",
+                "method": "POST",
+                "endpoint": "<<baseUrl>>/facility",
+                "params": [],
+                "headers": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "active": true
+                  }
+                ],
+                "preRequestScript": "",
+                "testScript": "if (pw.response.status === 201) {\n  const res = JSON.parse(pw.response.body);\n  if (res.data && res.data.id) pw.env.set(\"facilityId\", String(res.data.id));\n  if (res.credentials) {\n    console.log(\"Generated Credentials:\", res.credentials);\n  }\n}",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<token>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": "application/json",
+                  "body": "{\n  \"company_name\": \"Apex Facilities Corp\",\n  \"email\": \"contact@apexfacilities.com\",\n  \"phone\": \"9876543210\",\n  \"address\": \"Tower 4, Mindspace Tech Park, Mumbai\",\n  \"password\": \"FacilityPass@123\",\n  \"status\": \"active\"\n}"
+                }
+              },
+              {
+                "v": "1",
+                "name": "Get Facilities Created by Property Owner",
+                "method": "GET",
+                "endpoint": "<<baseUrl>>/facility/my-created?page=1&limit=10",
+                "params": [
+                  {
+                    "key": "page",
+                    "value": "1",
+                    "active": true
+                  },
+                  {
+                    "key": "limit",
+                    "value": "10",
+                    "active": true
+                  }
+                ],
+                "headers": [],
+                "preRequestScript": "",
+                "testScript": "",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<token>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": null,
+                  "body": null
+                }
+              },
+              {
+                "v": "1",
+                "name": "List All Facility Companies (Search & Filter)",
+                "method": "GET",
+                "endpoint": "<<baseUrl>>/facility?status=active&search=&page=1&limit=10",
+                "params": [
+                  {
+                    "key": "status",
+                    "value": "active",
+                    "active": true
+                  },
+                  {
+                    "key": "search",
+                    "value": "",
+                    "active": false
+                  },
+                  {
+                    "key": "page",
+                    "value": "1",
+                    "active": true
+                  },
+                  {
+                    "key": "limit",
+                    "value": "10",
+                    "active": true
+                  }
+                ],
+                "headers": [],
+                "preRequestScript": "",
+                "testScript": "",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<token>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": null,
+                  "body": null
+                }
+              },
+              {
+                "v": "1",
+                "name": "Get Facility Details by ID",
+                "method": "GET",
+                "endpoint": "<<baseUrl>>/facility/<<facilityId>>",
+                "params": [],
+                "headers": [],
+                "preRequestScript": "",
+                "testScript": "",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<token>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": null,
+                  "body": null
+                }
+              }
+            ],
+            "auth": {
+              "authType": "inherit",
+              "authActive": true
+            },
+            "headers": []
+          },
+          {
+            "v": 2,
+            "name": "Facility Company Profile",
+            "folders": [],
+            "requests": [
+              {
+                "v": "1",
+                "name": "Get Facility Profile (Me) & Property Assignments",
+                "method": "GET",
+                "endpoint": "<<baseUrl>>/facility/profile/me",
+                "params": [],
+                "headers": [],
+                "preRequestScript": "",
+                "testScript": "",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<facilityToken>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": null,
+                  "body": null
+                }
+              },
+              {
+                "v": "1",
+                "name": "Update Facility Profile",
+                "method": "PATCH",
+                "endpoint": "<<baseUrl>>/facility/profile/me",
+                "params": [],
+                "headers": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "active": true
+                  }
+                ],
+                "preRequestScript": "",
+                "testScript": "",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<facilityToken>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": "application/json",
+                  "body": "{\n  \"company_name\": \"Apex Facilities Global Corp\",\n  \"phone\": \"9876543219\",\n  \"address\": \"Penthouse Suite, Global Tech Park, Mumbai\"\n}"
+                }
+              }
+            ],
+            "auth": {
+              "authType": "inherit",
+              "authActive": true
+            },
+            "headers": []
+          }
+        ],
         "requests": [],
         "auth": {
           "authType": "inherit",

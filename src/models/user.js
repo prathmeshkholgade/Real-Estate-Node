@@ -18,6 +18,14 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'role_id',
         as: 'role',
       });
+      User.hasMany(models.FacilityManagementCompany, {
+        foreignKey: 'created_by',
+        as: 'createdFacilities',
+      });
+      User.hasMany(models.PropertyFacilityAssignment, {
+        foreignKey: 'assigned_by',
+        as: 'facilityAssignments',
+      });
     }
   }
   User.init({

@@ -1,14 +1,31 @@
 const jwt = require("jsonwebtoken");
-const {Property } = require("../models");
+const { Property } = require("../models");
+
 const generateToken = (userId) => {
-    const token = jwt.sign({
-        id: userId
-    },
+    const token = jwt.sign(
+        {
+            id: userId,
+        },
         process.env.JWT_SECRET,
         { expiresIn: "90d" }
     );
-    return token
-}
+    return token;
+};
+
+const generateFacilityToken = (company) => {
+    const token = jwt.sign(
+        {
+            id: company.id,
+            company_id: company.id,
+            email: company.email,
+            role: "Facility Management Company",
+            type: "facility",
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: "90d" }
+    );
+    return token;
+};
 
 const findOwnedPropertyOrThrow = async (propertyId, userId) => {
     const property = await Property.findOne({
@@ -27,4 +44,8 @@ const findOwnedPropertyOrThrow = async (propertyId, userId) => {
     return property;
 };
 
-module.exports = { generateToken, findOwnedPropertyOrThrow }
+module.exports = {
+    generateToken,
+    generateFacilityToken,
+    findOwnedPropertyOrThrow,
+};

@@ -12,7 +12,17 @@
       "secret": true
     },
     {
+      "key": "facilityToken",
+      "value": "",
+      "secret": true
+    },
+    {
       "key": "propertyId",
+      "value": "1",
+      "secret": false
+    },
+    {
+      "key": "facilityId",
       "value": "1",
       "secret": false
     },
@@ -28,4 +38,3 @@
     }
   ]
 }
-

@@ -2,25 +2,44 @@
 const {
   Model
 } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class FacilityManagementCompany extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
       FacilityManagementCompany.hasMany(models.PropertyFacilityAssignment, {
         foreignKey: "company_id",
         as: "propertyAssignments",
       });
+
+      FacilityManagementCompany.belongsTo(models.User, {
+        foreignKey: "created_by",
+        as: "creator",
+      });
     }
   }
+
   FacilityManagementCompany.init({
-    company_name: DataTypes.STRING,
-    email: DataTypes.STRING,
-    phone: DataTypes.INTEGER,
-    address: DataTypes.TEXT,
+    company_name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+    },
+    phone: {
+      type: DataTypes.STRING(20),
+      allowNull: true,
+    },
+    address: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     status: {
       type: DataTypes.ENUM(
         "pending",
@@ -28,10 +47,18 @@ module.exports = (sequelize, DataTypes) => {
         "inactive",
         "suspended"
       ),
-    }
+      defaultValue: "pending",
+      allowNull: false,
+    },
+    created_by: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
   }, {
     sequelize,
     modelName: 'FacilityManagementCompany',
+    tableName: 'FacilityManagementCompanies',
   });
+
   return FacilityManagementCompany;
 };

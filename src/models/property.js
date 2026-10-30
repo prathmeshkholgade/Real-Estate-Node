@@ -37,6 +37,10 @@ module.exports = (sequelize, DataTypes) => {
         otherKey: 'amenity_id',
         as: 'amenities',
       });
+      Property.hasMany(models.PropertyFacilityAssignment, {
+        foreignKey: 'property_id',
+        as: 'facilityAssignments',
+      });
     }
   }
   Property.init({
