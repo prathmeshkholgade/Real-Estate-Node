@@ -2,6 +2,7 @@ const express = require("express");
 const { verifyUser } = require("../middleware/middleware");
 const validate = require("../middleware/validate");
 const { asyncWrap } = require("../utils/async_wrap");
+const upload = require("../middleware/upload");
 const {
     getPropertyById,
     createPropertyBasicInfo,
@@ -9,15 +10,10 @@ const {
     upsertPropertyDetails,
     upsertPropertyConfiguration,
     addPropertyMedia,
-    deletePropertyMedia,
     addPropertyDocuments,
-    deletePropertyDocument,
-    submitProperty,
 } = require("../controller/property_controller");
 const {
     propertyIdParamSchema,
-    propertyMediaParamSchema,
-    propertyDocumentParamSchema,
     createPropertyBasicInfoSchema,
     updatePropertyBasicInfoSchema,
     propertyDetailSchema,
@@ -80,16 +76,12 @@ router.post(
     verifyUser,
     validate(propertyIdParamSchema, "params"),
     validate(propertyMediaSchema, "body"),
+    upload.fields([
+        { name: "images", maxCount: 8 },
+        { name: "videos", maxCount: 2 },
+    ]),
     asyncWrap(addPropertyMedia)
 );
-
-router.delete(
-    "/:id/media/:mediaId",
-    verifyUser,
-    validate(propertyMediaParamSchema, "params"),
-    asyncWrap(deletePropertyMedia)
-);
-
 
 
 router.post(
@@ -97,25 +89,13 @@ router.post(
     verifyUser,
     validate(propertyIdParamSchema, "params"),
     validate(propertyDocumentSchema, "body"),
+    upload.fields([
+        { name: "documents", maxCount: 5 },
+    ]),
     asyncWrap(addPropertyDocuments)
 );
 
-router.delete(
-    "/:id/documents/:docId",
-    verifyUser,
-    validate(propertyDocumentParamSchema, "params"),
-    asyncWrap(deletePropertyDocument)
-);
 
-
-
-router.post(
-    "/:id/submit",
-    verifyUser,
-    validate(propertyIdParamSchema, "params"),
-    validate(submitPropertySchema, "body"),
-    asyncWrap(submitProperty)
-);
 
 module.exports = router;
 
