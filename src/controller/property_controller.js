@@ -142,6 +142,7 @@ const addPropertyDocuments = async (req, res) => {
         message: "Documents uploaded successfully",
         data: documents,
     });
+
 };
 
 

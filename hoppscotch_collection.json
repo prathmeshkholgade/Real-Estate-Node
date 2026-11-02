@@ -639,6 +639,255 @@
           "authActive": true
         },
         "headers": []
+      },
+      {
+        "v": 2,
+        "name": "4. Property Site Visits",
+        "folders": [
+          {
+            "v": 2,
+            "name": "Buyer Flow",
+            "folders": [],
+            "requests": [
+              {
+                "v": "1",
+                "name": "Book a Site Visit",
+                "method": "POST",
+                "endpoint": "<<baseUrl>>/api/site-visits",
+                "params": [],
+                "headers": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "active": true
+                  }
+                ],
+                "preRequestScript": "",
+                "testScript": "if (pw.response.status === 201) {\n  const res = JSON.parse(pw.response.body);\n  if (res.data && res.data.id) pw.env.set(\"visitId\", String(res.data.id));\n}",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<token>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": "application/json",
+                  "body": "{\n  \"property_id\": 1,\n  \"preferred_date\": \"2026-11-20\",\n  \"start_time\": \"11:00\",\n  \"end_time\": \"12:00\",\n  \"message\": \"Would love to inspect the master bedroom and parking space.\"\n}"
+                }
+              },
+              {
+                "v": "1",
+                "name": "Buyer's Bookings (My Visits)",
+                "method": "GET",
+                "endpoint": "<<baseUrl>>/api/site-visits/my-visits?page=1&limit=10",
+                "params": [
+                  {
+                    "key": "page",
+                    "value": "1",
+                    "active": true
+                  },
+                  {
+                    "key": "limit",
+                    "value": "10",
+                    "active": true
+                  },
+                  {
+                    "key": "status",
+                    "value": "",
+                    "active": false
+                  }
+                ],
+                "headers": [],
+                "preRequestScript": "",
+                "testScript": "",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<token>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": null,
+                  "body": null
+                }
+              },
+              {
+                "v": "1",
+                "name": "Visit Details by ID",
+                "method": "GET",
+                "endpoint": "<<baseUrl>>/api/site-visits/<<visitId>>",
+                "params": [],
+                "headers": [],
+                "preRequestScript": "",
+                "testScript": "",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<token>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": null,
+                  "body": null
+                }
+              },
+              {
+                "v": "1",
+                "name": "Cancel Booking",
+                "method": "PATCH",
+                "endpoint": "<<baseUrl>>/api/site-visits/<<visitId>>/cancel",
+                "params": [],
+                "headers": [],
+                "preRequestScript": "",
+                "testScript": "",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<token>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": null,
+                  "body": null
+                }
+              }
+            ],
+            "auth": {
+              "authType": "inherit",
+              "authActive": true
+            },
+            "headers": []
+          },
+          {
+            "v": 2,
+            "name": "Owner & Agent Management",
+            "folders": [],
+            "requests": [
+              {
+                "v": "1",
+                "name": "Owner Views Visit Requests",
+                "method": "GET",
+                "endpoint": "<<baseUrl>>/api/owner/site-visits?page=1&limit=10",
+                "params": [
+                  {
+                    "key": "page",
+                    "value": "1",
+                    "active": true
+                  },
+                  {
+                    "key": "limit",
+                    "value": "10",
+                    "active": true
+                  },
+                  {
+                    "key": "status",
+                    "value": "pending",
+                    "active": false
+                  },
+                  {
+                    "key": "property_id",
+                    "value": "",
+                    "active": false
+                  }
+                ],
+                "headers": [],
+                "preRequestScript": "",
+                "testScript": "",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<token>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": null,
+                  "body": null
+                }
+              },
+              {
+                "v": "1",
+                "name": "Owner Confirms Visit",
+                "method": "PATCH",
+                "endpoint": "<<baseUrl>>/api/site-visits/<<visitId>>/status",
+                "params": [],
+                "headers": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "active": true
+                  }
+                ],
+                "preRequestScript": "",
+                "testScript": "",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<token>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": "application/json",
+                  "body": "{\n  \"status\": \"confirmed\",\n  \"scheduled_date\": \"2026-11-20\",\n  \"scheduled_start_time\": \"11:00\",\n  \"scheduled_end_time\": \"12:00\"\n}"
+                }
+              },
+              {
+                "v": "1",
+                "name": "Owner Rejects Visit",
+                "method": "PATCH",
+                "endpoint": "<<baseUrl>>/api/site-visits/<<visitId>>/status",
+                "params": [],
+                "headers": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "active": true
+                  }
+                ],
+                "preRequestScript": "",
+                "testScript": "",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<token>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": "application/json",
+                  "body": "{\n  \"status\": \"rejected\"\n}"
+                }
+              },
+              {
+                "v": "1",
+                "name": "Owner Completes Visit",
+                "method": "PATCH",
+                "endpoint": "<<baseUrl>>/api/site-visits/<<visitId>>/status",
+                "params": [],
+                "headers": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "active": true
+                  }
+                ],
+                "preRequestScript": "",
+                "testScript": "",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<token>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": "application/json",
+                  "body": "{\n  \"status\": \"completed\"\n}"
+                }
+              }
+            ],
+            "auth": {
+              "authType": "inherit",
+              "authActive": true
+            },
+            "headers": []
+          }
+        ],
+        "requests": [],
+        "auth": {
+          "authType": "inherit",
+          "authActive": true
+        },
+        "headers": []
       }
     ],
     "requests": [],

@@ -683,6 +683,84 @@ const facilityIdParamSchema = Joi.object({
         }),
 });
 
+const timePattern = /^([01]\d|2[0-3]):([0-5]\d)(:([0-5]\d))?$/;
+
+const bookSiteVisitSchema = Joi.object({
+    property_id: Joi.number()
+        .integer()
+        .positive()
+        .required()
+        .messages({
+            "number.base": "Property ID must be a number",
+            "any.required": "Property ID is required",
+        }),
+    preferred_date: Joi.string()
+        .pattern(/^\d{4}-\d{2}-\d{2}$/)
+        .required()
+        .messages({
+            "string.pattern.base": "Preferred date must be in YYYY-MM-DD format",
+            "any.required": "Preferred date is required",
+        }),
+    start_time: Joi.string()
+        .pattern(timePattern)
+        .required()
+        .messages({
+            "string.pattern.base": "Start time must be in HH:mm or HH:mm:ss format",
+            "any.required": "Start time is required",
+        }),
+    end_time: Joi.string()
+        .pattern(timePattern)
+        .required()
+        .messages({
+            "string.pattern.base": "End time must be in HH:mm or HH:mm:ss format",
+            "any.required": "End time is required",
+        }),
+    message: Joi.string().max(1000).allow("", null),
+    phone_number: Joi.string().pattern(/^[0-9+ -]{7,20}$/).allow("", null),
+    full_name: Joi.string().trim().max(100).allow("", null),
+    email: Joi.string().email().allow("", null),
+}).custom((value, helpers) => {
+    const s = value.start_time.length === 5 ? `${value.start_time}:00` : value.start_time;
+    const e = value.end_time.length === 5 ? `${value.end_time}:00` : value.end_time;
+    if (s >= e) {
+        return helpers.message({ custom: "End time must be after start time" });
+    }
+    return value;
+});
+
+const updateSiteVisitStatusSchema = Joi.object({
+    status: Joi.string()
+        .valid("confirmed", "rejected", "completed", "cancelled")
+        .required()
+        .messages({
+            "any.only": "Status must be one of: confirmed, rejected, completed, cancelled",
+            "any.required": "Status is required",
+        }),
+    scheduled_date: Joi.string().pattern(/^\d{4}-\d{2}-\d{2}$/).allow(null),
+    scheduled_start_time: Joi.string().pattern(timePattern).allow(null),
+    scheduled_end_time: Joi.string().pattern(timePattern).allow(null),
+}).custom((value, helpers) => {
+    if (value.scheduled_start_time && value.scheduled_end_time) {
+        const s = value.scheduled_start_time.length === 5 ? `${value.scheduled_start_time}:00` : value.scheduled_start_time;
+        const e = value.scheduled_end_time.length === 5 ? `${value.scheduled_end_time}:00` : value.scheduled_end_time;
+        if (s >= e) {
+            return helpers.message({ custom: "Scheduled end time must be after scheduled start time" });
+        }
+    }
+    return value;
+});
+
+const siteVisitIdParamSchema = Joi.object({
+    id: Joi.number()
+        .integer()
+        .positive()
+        .required()
+        .messages({
+            "number.base": "Site visit ID must be a number",
+            "any.required": "Site visit ID parameter is required",
+        }),
+});
+
 module.exports = {
     userSchema,
     loginSchema,
@@ -700,6 +778,9 @@ module.exports = {
     createFacilityCompanySchema,
     updateFacilityCompanySchema,
     facilityIdParamSchema,
+    bookSiteVisitSchema,
+    updateSiteVisitStatusSchema,
+    siteVisitIdParamSchema,
     FACILITY_STATUSES,
     PROPERTY_TYPES,
     LISTING_TYPES,

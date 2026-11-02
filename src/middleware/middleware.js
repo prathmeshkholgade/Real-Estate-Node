@@ -24,6 +24,42 @@ const verifyUser = (req, res, next) => {
     }
 };
 
+const verifyBuyer = async (req, res, next) => {
+    try {
+        if (!req.user || !req.user.id) {
+            return res.status(401).json({
+                success: false,
+                message: "Unauthorized - Authentication required",
+            });
+        }
+
+        const user = await User.findByPk(req.user.id, {
+            include: [{ model: Roles, as: "role" }],
+        });
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found",
+            });
+        }
+
+        const roleName = user.role?.role_name?.toLowerCase();
+        if (user.role_id !== 1 && roleName !== "buyer") {
+            return res.status(403).json({
+                success: false,
+                message: "Forbidden - Only buyers can perform this action",
+            });
+        }
+
+        req.currentUser = user;
+        req.buyer = user;
+        next();
+    } catch (error) {
+        next(error);
+    }
+};
+
 const verifyPropertyOwner = async (req, res, next) => {
     try {
         if (!req.user || !req.user.id) {
@@ -105,6 +141,7 @@ const verifyFacility = async (req, res, next) => {
 
 module.exports = {
     verifyUser,
+    verifyBuyer,
     verifyPropertyOwner,
     verifyFacility,
 };

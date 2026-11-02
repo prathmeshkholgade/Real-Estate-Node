@@ -39,6 +39,7 @@ const getAllFacilities = async (req, res) => {
         message: "Facility management companies retrieved successfully",
         data: result,
     });
+
 };
 
 const getMyCreatedFacilities = async (req, res) => {
@@ -90,3 +91,9 @@ module.exports = {
     getFacilityProfile,
     updateFacilityProfile,
 };
+
+
+
+
+
+

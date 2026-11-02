@@ -389,6 +389,7 @@ const addPropertyDocumentsService = async (
     if (property.current_step < 5) {
         await property.update({
             current_step: 5,
+            status: "published"
         });
     }
 

@@ -41,6 +41,11 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'property_id',
         as: 'facilityAssignments',
       });
+      Property.hasMany(models.PropertySiteVisit, {
+        foreignKey: 'property_id',
+        as: 'siteVisits',
+      });
+
     }
   }
   Property.init({

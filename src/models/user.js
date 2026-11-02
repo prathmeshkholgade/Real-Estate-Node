@@ -26,6 +26,16 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'assigned_by',
         as: 'facilityAssignments',
       });
+      User.hasMany(models.PropertySiteVisit, {
+        foreignKey: "user_id",
+        as: "bookedSiteVisits",
+      });
+
+      User.hasMany(models.PropertySiteVisit, {
+        foreignKey: "reviewed_by",
+        as: "reviewedSiteVisits",
+      });
+
     }
   }
   User.init({

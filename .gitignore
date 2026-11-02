@@ -1,6 +1,7 @@
 .env
 node_modules
-
+.hoppscotch_environment.json
+.hoppscotch_collection.json
 
 
 
