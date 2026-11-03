@@ -761,6 +761,92 @@ const siteVisitIdParamSchema = Joi.object({
         }),
 });
 
+const submitPurchaseRequestSchema = Joi.object({
+    property_id: Joi.number()
+        .integer()
+        .positive()
+        .required()
+        .messages({
+            "number.base": "Property ID must be a number",
+            "any.required": "Property ID is required",
+        }),
+    offered_price: Joi.number()
+        .positive()
+        .required()
+        .messages({
+            "number.base": "Offered price must be a number",
+            "number.positive": "Offered price must be greater than 0",
+            "any.required": "Offered price is required",
+        }),
+    message: Joi.string()
+        .max(1000)
+        .allow("", null)
+        .optional(),
+    site_visit_id: Joi.number()
+        .integer()
+        .positive()
+        .optional(),
+});
+
+const purchaseRequestIdParamSchema = Joi.object({
+    id: Joi.number()
+        .integer()
+        .positive()
+        .required()
+        .messages({
+            "number.base": "Purchase request ID must be a number",
+            "any.required": "Purchase request ID is required",
+        }),
+});
+
+const updatePurchaseRequestStatusSchema = Joi.object({
+    status: Joi.string()
+        .valid("accepted", "rejected")
+        .required()
+        .messages({
+            "any.only": "Status must be either accepted or rejected",
+            "any.required": "Status is required",
+        }),
+    agreed_price: Joi.number()
+        .positive()
+        .optional()
+        .messages({
+            "number.base": "Agreed price must be a number",
+            "number.positive": "Agreed price must be greater than 0",
+        }),
+});
+
+const recordPaymentSchema = Joi.object({
+    amount: Joi.number()
+        .positive()
+        .optional()
+        .messages({
+            "number.base": "Amount must be a number",
+            "number.positive": "Amount must be greater than 0",
+        }),
+    payment_method: Joi.string()
+        .max(50)
+        .optional(),
+    transaction_reference: Joi.string()
+        .max(100)
+        .optional(),
+});
+
+const paymentWebhookSchema = Joi.object({
+    event: Joi.string().optional(),
+    payment_id: Joi.number().integer().positive().optional(),
+    transaction_reference: Joi.string().optional(),
+    gateway_order_id: Joi.string().optional(),
+    gateway_payment_id: Joi.string().optional(),
+    status: Joi.string().valid("success", "failed", "refunded").optional(),
+    amount: Joi.number().positive().optional(),
+}).unknown(true);
+
+const completePurchaseSchema = Joi.object({
+    legal_verified: Joi.boolean().optional(),
+    verification_notes: Joi.string().max(1000).allow("", null).optional(),
+});
+
 module.exports = {
     userSchema,
     loginSchema,
@@ -781,6 +867,12 @@ module.exports = {
     bookSiteVisitSchema,
     updateSiteVisitStatusSchema,
     siteVisitIdParamSchema,
+    submitPurchaseRequestSchema,
+    purchaseRequestIdParamSchema,
+    updatePurchaseRequestStatusSchema,
+    recordPaymentSchema,
+    paymentWebhookSchema,
+    completePurchaseSchema,
     FACILITY_STATUSES,
     PROPERTY_TYPES,
     LISTING_TYPES,

@@ -15,6 +15,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "created_by",
         as: "creator",
       });
+      FacilityManagementCompany.hasMany(models.Technician, {
+        foreignKey: "company_id",
+        as: "technicians",
+      });
     }
   }
 

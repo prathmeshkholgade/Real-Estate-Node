@@ -45,6 +45,15 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'property_id',
         as: 'siteVisits',
       });
+      Property.hasMany(models.PropertyPurchaseRequest, {
+        foreignKey: "property_id",
+        as: "purchaseRequests",
+      });
+
+      Property.hasMany(models.PropertyOwnership, {
+        foreignKey: "property_id",
+        as: "ownershipHistory",
+      });
 
     }
   }

@@ -16,6 +16,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "reviewed_by",
         as: "reviewer",
       });
+      PropertySiteVisit.hasMany(models.PropertyPurchaseRequest, {
+        foreignKey: "site_visit_id",
+        as: "purchaseRequests",
+      });
     }
   }
 

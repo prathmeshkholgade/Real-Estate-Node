@@ -653,7 +653,7 @@
                 "v": "1",
                 "name": "Book a Site Visit",
                 "method": "POST",
-                "endpoint": "<<baseUrl>>/api/site-visits",
+                "endpoint": "<<baseUrl>>/site-visits",
                 "params": [],
                 "headers": [
                   {
@@ -678,7 +678,7 @@
                 "v": "1",
                 "name": "Buyer's Bookings (My Visits)",
                 "method": "GET",
-                "endpoint": "<<baseUrl>>/api/site-visits/my-visits?page=1&limit=10",
+                "endpoint": "<<baseUrl>>/site-visits/my-visits?page=1&limit=10",
                 "params": [
                   {
                     "key": "page",
@@ -713,7 +713,7 @@
                 "v": "1",
                 "name": "Visit Details by ID",
                 "method": "GET",
-                "endpoint": "<<baseUrl>>/api/site-visits/<<visitId>>",
+                "endpoint": "<<baseUrl>>/site-visits/<<visitId>>",
                 "params": [],
                 "headers": [],
                 "preRequestScript": "",
@@ -732,7 +732,7 @@
                 "v": "1",
                 "name": "Cancel Booking",
                 "method": "PATCH",
-                "endpoint": "<<baseUrl>>/api/site-visits/<<visitId>>/cancel",
+                "endpoint": "<<baseUrl>>/site-visits/<<visitId>>/cancel",
                 "params": [],
                 "headers": [],
                 "preRequestScript": "",
@@ -763,7 +763,7 @@
                 "v": "1",
                 "name": "Owner Views Visit Requests",
                 "method": "GET",
-                "endpoint": "<<baseUrl>>/api/owner/site-visits?page=1&limit=10",
+                "endpoint": "<<baseUrl>>/owner/site-visits?page=1&limit=10",
                 "params": [
                   {
                     "key": "page",
@@ -803,7 +803,7 @@
                 "v": "1",
                 "name": "Owner Confirms Visit",
                 "method": "PATCH",
-                "endpoint": "<<baseUrl>>/api/site-visits/<<visitId>>/status",
+                "endpoint": "<<baseUrl>>/site-visits/<<visitId>>/status",
                 "params": [],
                 "headers": [
                   {
@@ -828,7 +828,7 @@
                 "v": "1",
                 "name": "Owner Rejects Visit",
                 "method": "PATCH",
-                "endpoint": "<<baseUrl>>/api/site-visits/<<visitId>>/status",
+                "endpoint": "<<baseUrl>>/site-visits/<<visitId>>/status",
                 "params": [],
                 "headers": [
                   {
@@ -853,7 +853,7 @@
                 "v": "1",
                 "name": "Owner Completes Visit",
                 "method": "PATCH",
-                "endpoint": "<<baseUrl>>/api/site-visits/<<visitId>>/status",
+                "endpoint": "<<baseUrl>>/site-visits/<<visitId>>/status",
                 "params": [],
                 "headers": [
                   {
@@ -872,6 +872,316 @@
                 "body": {
                   "contentType": "application/json",
                   "body": "{\n  \"status\": \"completed\"\n}"
+                }
+              }
+            ],
+            "auth": {
+              "authType": "inherit",
+              "authActive": true
+            },
+            "headers": []
+          }
+        ],
+        "requests": [],
+        "auth": {
+          "authType": "inherit",
+          "authActive": true
+        },
+        "headers": []
+      },
+      {
+        "v": 2,
+        "name": "5. Purchase Requests & Ownership",
+        "folders": [
+          {
+            "v": 2,
+            "name": "Buyer Flow",
+            "folders": [],
+            "requests": [
+              {
+                "v": "1",
+                "name": "Submit Purchase Request",
+                "method": "POST",
+                "endpoint": "<<baseUrl>>/purchase-requests",
+                "params": [],
+                "headers": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "active": true
+                  }
+                ],
+                "preRequestScript": "",
+                "testScript": "if (pw.response.status === 201) {\n  const res = JSON.parse(pw.response.body);\n  if (res.data && res.data.id) pw.env.set(\"requestId\", String(res.data.id));\n}",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<token>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": "application/json",
+                  "body": "{\n  \"property_id\": 1,\n  \"offered_price\": 7200000,\n  \"message\": \"Offering 72L for quick closure.\",\n  \"site_visit_id\": 1\n}"
+                }
+              },
+              {
+                "v": "1",
+                "name": "Buyer's Purchase Requests",
+                "method": "GET",
+                "endpoint": "<<baseUrl>>/purchase-requests/my-requests?page=1&limit=10",
+                "params": [
+                  {
+                    "key": "page",
+                    "value": "1",
+                    "active": true
+                  },
+                  {
+                    "key": "limit",
+                    "value": "10",
+                    "active": true
+                  },
+                  {
+                    "key": "status",
+                    "value": "pending",
+                    "active": false
+                  }
+                ],
+                "headers": [],
+                "preRequestScript": "",
+                "testScript": "",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<token>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": null,
+                  "body": null
+                }
+              },
+              {
+                "v": "1",
+                "name": "Purchase Request Details by ID",
+                "method": "GET",
+                "endpoint": "<<baseUrl>>/purchase-requests/<<requestId>>",
+                "params": [],
+                "headers": [],
+                "preRequestScript": "",
+                "testScript": "",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<token>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": null,
+                  "body": null
+                }
+              },
+              {
+                "v": "1",
+                "name": "Record / Initiate Dummy Payment",
+                "method": "POST",
+                "endpoint": "<<baseUrl>>/purchase-requests/<<requestId>>/payments",
+                "params": [],
+                "headers": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "active": true
+                  }
+                ],
+                "preRequestScript": "",
+                "testScript": "if (pw.response.status === 201) {\n  const res = JSON.parse(pw.response.body);\n  if (res.data && res.data.id) pw.env.set(\"paymentId\", String(res.data.id));\n}",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<token>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": "application/json",
+                  "body": "{\n  \"amount\": 7200000,\n  \"payment_method\": \"upi\",\n  \"transaction_reference\": \"TXN_SAMPLE_12345\"\n}"
+                }
+              }
+            ],
+            "auth": {
+              "authType": "inherit",
+              "authActive": true
+            },
+            "headers": []
+          },
+          {
+            "v": 2,
+            "name": "Owner Flow",
+            "folders": [],
+            "requests": [
+              {
+                "v": "1",
+                "name": "Owner Views Purchase Requests",
+                "method": "GET",
+                "endpoint": "<<baseUrl>>/owner/purchase-requests?page=1&limit=10",
+                "params": [
+                  {
+                    "key": "page",
+                    "value": "1",
+                    "active": true
+                  },
+                  {
+                    "key": "limit",
+                    "value": "10",
+                    "active": true
+                  },
+                  {
+                    "key": "status",
+                    "value": "pending",
+                    "active": false
+                  },
+                  {
+                    "key": "property_id",
+                    "value": "",
+                    "active": false
+                  }
+                ],
+                "headers": [],
+                "preRequestScript": "",
+                "testScript": "",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<token>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": null,
+                  "body": null
+                }
+              },
+              {
+                "v": "1",
+                "name": "Owner Accepts Purchase Request",
+                "method": "PATCH",
+                "endpoint": "<<baseUrl>>/purchase-requests/<<requestId>>/status",
+                "params": [],
+                "headers": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "active": true
+                  }
+                ],
+                "preRequestScript": "",
+                "testScript": "",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<token>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": "application/json",
+                  "body": "{\n  \"status\": \"accepted\",\n  \"agreed_price\": 7200000\n}"
+                }
+              },
+              {
+                "v": "1",
+                "name": "Owner Rejects Purchase Request",
+                "method": "PATCH",
+                "endpoint": "<<baseUrl>>/purchase-requests/<<requestId>>/status",
+                "params": [],
+                "headers": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "active": true
+                  }
+                ],
+                "preRequestScript": "",
+                "testScript": "",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<token>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": "application/json",
+                  "body": "{\n  \"status\": \"rejected\"\n}"
+                }
+              },
+              {
+                "v": "1",
+                "name": "Complete Verified Purchase & Transfer Ownership",
+                "method": "POST",
+                "endpoint": "<<baseUrl>>/purchase-requests/<<requestId>>/complete",
+                "params": [],
+                "headers": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "active": true
+                  }
+                ],
+                "preRequestScript": "",
+                "testScript": "",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<token>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": "application/json",
+                  "body": "{\n  \"legal_verified\": true,\n  \"verification_notes\": \"Title deeds, encumbrance certificates, and stamp duty verified.\"\n}"
+                }
+              }
+            ],
+            "auth": {
+              "authType": "inherit",
+              "authActive": true
+            },
+            "headers": []
+          },
+          {
+            "v": 2,
+            "name": "Payments & Ownership",
+            "folders": [],
+            "requests": [
+              {
+                "v": "1",
+                "name": "Payment Gateway Webhook",
+                "method": "POST",
+                "endpoint": "<<baseUrl>>/payments/webhook",
+                "params": [],
+                "headers": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "active": true
+                  }
+                ],
+                "preRequestScript": "",
+                "testScript": "",
+                "auth": {
+                  "authType": "none",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": "application/json",
+                  "body": "{\n  \"event\": \"payment.captured\",\n  \"payment_id\": 1,\n  \"transaction_reference\": \"TXN_SAMPLE_12345\",\n  \"status\": \"success\",\n  \"amount\": 7200000\n}"
+                }
+              },
+              {
+                "v": "1",
+                "name": "View Current Property Ownership & History",
+                "method": "GET",
+                "endpoint": "<<baseUrl>>/properties/<<propertyId>>/ownership",
+                "params": [],
+                "headers": [],
+                "preRequestScript": "",
+                "testScript": "",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<token>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": null,
+                  "body": null
                 }
               }
             ],

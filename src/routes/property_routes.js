@@ -13,6 +13,7 @@ const {
     addPropertyDocuments,
     getAllProperties,
 } = require("../controller/property_controller");
+const { getPropertyOwnership } = require("../controller/purchase_request_controller");
 const {
     propertyIdParamSchema,
     createPropertyBasicInfoSchema,
@@ -101,7 +102,12 @@ router.post(
     asyncWrap(addPropertyDocuments)
 );
 
-
+router.get(
+    "/:id/ownership",
+    verifyUser,
+    validate(propertyIdParamSchema, "params"),
+    asyncWrap(getPropertyOwnership)
+);
 
 module.exports = router;
 

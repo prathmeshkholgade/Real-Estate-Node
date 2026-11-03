@@ -484,6 +484,7 @@ const updateSiteVisitStatusService = async (visitId, reviewerId, data) => {
     return updatedVisit;
 };
 
+
 module.exports = {
     bookSiteVisitService,
     getBuyerVisitsService,

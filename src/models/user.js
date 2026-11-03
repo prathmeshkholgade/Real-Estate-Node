@@ -35,7 +35,24 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "reviewed_by",
         as: "reviewedSiteVisits",
       });
+      User.hasMany(models.PropertyPurchaseRequest, {
+        foreignKey: "buyer_id",
+        as: "buyerPurchaseRequests",
+      });
 
+      User.hasMany(models.PropertyPurchaseRequest, {
+        foreignKey: "reviewed_by",
+        as: "reviewedPurchaseRequests",
+      });
+
+      User.hasMany(models.PropertyOwnership, {
+        foreignKey: "owner_id",
+        as: "ownedProperties",
+      });
+      User.hasOne(models.Technician, {
+        foreignKey: "user_id",
+        as: "technicianProfile",
+      });
     }
   }
   User.init({
