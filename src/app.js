@@ -10,6 +10,10 @@ app.use(express.urlencoded({
     limit: "10mb",
 }));
 
+app.get("/", (req, res) => {
+    res.send("working");
+});
+
 app.use(router);
 
 
