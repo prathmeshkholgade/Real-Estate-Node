@@ -30,7 +30,7 @@ module.exports = {
       assigned_by: {
         type: Sequelize.INTEGER,
         references: {
-          model: "users",
+          model: "Users",
           key: "id",
         },
         onUpdate: "CASCADE",
