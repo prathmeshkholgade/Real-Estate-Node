@@ -6,6 +6,8 @@ const {
     getFacilityByIdService,
     getFacilityProfileService,
     updateFacilityProfileService,
+    createTechnicianByFacilityService,
+    getFacilityTechniciansService,
 } = require("../services/facility_company_service");
 
 const facilityLogin = async (req, res) => {
@@ -82,6 +84,27 @@ const updateFacilityProfile = async (req, res) => {
     });
 };
 
+const createTechnician = async (req, res) => {
+    const result = await createTechnicianByFacilityService(req.facility.id, req.body);
+
+    return res.status(201).json({
+        success: true,
+        message: "Technician created successfully. Login credentials generated.",
+        data: result.technician,
+        credentials: result.credentials,
+    });
+};
+
+const getFacilityTechnicians = async (req, res) => {
+    const result = await getFacilityTechniciansService(req.facility.id, req.query);
+
+    return res.status(200).json({
+        success: true,
+        message: "Technicians retrieved successfully",
+        data: result,
+    });
+};
+
 module.exports = {
     facilityLogin,
     createFacilityCompany,
@@ -90,6 +113,8 @@ module.exports = {
     getFacilityById,
     getFacilityProfile,
     updateFacilityProfile,
+    createTechnician,
+    getFacilityTechnicians,
 };
 
 

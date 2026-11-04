@@ -55,6 +55,30 @@
               "contentType": "application/json",
               "body": "{\n  \"email\": \"prathmesh@example.com\",\n  \"password\": \"Password123\"\n}"
             }
+          },
+          {
+            "v": "1",
+            "name": "Technician Login",
+            "method": "POST",
+            "endpoint": "<<baseUrl>>/auth/login",
+            "params": [],
+            "headers": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "active": true
+              }
+            ],
+            "preRequestScript": "",
+            "testScript": "if (pw.response.status === 200) {\n  const res = JSON.parse(pw.response.body);\n  if (res.token) {\n    pw.env.set('techToken', res.token);\n  }\n}",
+            "auth": {
+              "authType": "none",
+              "authActive": true
+            },
+            "body": {
+              "contentType": "application/json",
+              "body": "{\n  \"email\": \"ramesh.technician@example.com\",\n  \"password\": \"TechPass@123\"\n}"
+            }
           }
         ],
         "auth": {
@@ -631,6 +655,103 @@
               "authActive": true
             },
             "headers": []
+          },
+          {
+            "v": 2,
+            "name": "Technician Management",
+            "folders": [],
+            "requests": [
+              {
+                "v": "1",
+                "name": "Create Technician (-create-technicition)",
+                "method": "POST",
+                "endpoint": "<<baseUrl>>/facility/create-technicition",
+                "params": [],
+                "headers": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "active": true
+                  }
+                ],
+                "preRequestScript": "",
+                "testScript": "if (pw.response.status === 201) {\n  const res = JSON.parse(pw.response.body);\n  if (res.data && res.data.id) pw.env.set('technicianId', String(res.data.id));\n  if (res.credentials) console.log('Technician Login Credentials:', res.credentials);\n}",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<facilityToken>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": "application/json",
+                  "body": "{\n  \"fullName\": \"Ramesh Sharma\",\n  \"email\": \"ramesh.technician@example.com\",\n  \"phone\": \"9812345678\",\n  \"password\": \"TechPassword@123\",\n  \"specialization\": \"Electrical & HVAC\",\n  \"experience_years\": 4,\n  \"qualification\": \"ITI Electrical\",\n  \"status\": \"active\"\n}"
+                }
+              },
+              {
+                "v": "1",
+                "name": "Create Technician (Standard Alias)",
+                "method": "POST",
+                "endpoint": "<<baseUrl>>/facility/create-technician",
+                "params": [],
+                "headers": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "active": true
+                  }
+                ],
+                "preRequestScript": "",
+                "testScript": "if (pw.response.status === 201) {\n  const res = JSON.parse(pw.response.body);\n  if (res.data && res.data.id) pw.env.set('technicianId', String(res.data.id));\n  if (res.credentials) console.log('Technician Login Credentials:', res.credentials);\n}",
+                "auth": {
+                  "authType": "bearer",
+                  "authActive": true,
+                  "token": "<<facilityToken>>"
+                },
+                "body": {
+                  "contentType": "application/json",
+                  "body": "{\n  \"fullName\": \"Suresh Patel\",\n  \"email\": \"suresh.technician@example.com\",\n  \"phone\": \"9812345679\",\n  \"password\": \"TechPass@123\",\n  \"specialization\": \"HVAC & Air Conditioning\",\n  \"experience_years\": 6,\n  \"qualification\": \"Certified HVAC Specialist\",\n  \"status\": \"active\"\n}"
+                }
+              },
+              {
+                "v": "1",
+                "name": "Get Company Technicians (Paginated)",
+                "method": "GET",
+                "endpoint": "<<baseUrl>>/facility/technicians?page=1&limit=10",
+                "params": [
+                  {
+                    "key": "page",
+                    "value": "1",
+                    "active": true
+                  },
+                  {
+                    "key": "limit",
+                    "value": "10",
+                    "active": true
+                  },
+                  {
+                    "key": "status",
+                    "value": "active",
+                    "active": false
+                  }
+                ],
+                "headers": [],
+                "preRequestScript": "",
+                "testScript": "",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<facilityToken>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": null,
+                  "body": null
+                }
+              }
+            ],
+            "auth": {
+              "authType": "inherit",
+              "authActive": true
+            },
+            "headers": []
           }
         ],
         "requests": [],
@@ -793,6 +914,36 @@
                   "authType": "bearer",
                   "token": "<<token>>",
                   "authActive": true
+                },
+                "body": {
+                  "contentType": null,
+                  "body": null
+                }
+              },
+              {
+                "v": "1",
+                "name": "Owner Views Visit Requests (Route Alias)",
+                "method": "GET",
+                "endpoint": "<<baseUrl>>/site-visits/owner?page=1&limit=10",
+                "params": [
+                  {
+                    "key": "page",
+                    "value": "1",
+                    "active": true
+                  },
+                  {
+                    "key": "limit",
+                    "value": "10",
+                    "active": true
+                  }
+                ],
+                "headers": [],
+                "preRequestScript": "",
+                "testScript": "",
+                "auth": {
+                  "authType": "bearer",
+                  "authActive": true,
+                  "token": "<<token>>"
                 },
                 "body": {
                   "contentType": null,
@@ -1056,6 +1207,36 @@
               },
               {
                 "v": "1",
+                "name": "Owner Views Purchase Requests (Route Alias)",
+                "method": "GET",
+                "endpoint": "<<baseUrl>>/purchase-requests/owner?page=1&limit=10",
+                "params": [
+                  {
+                    "key": "page",
+                    "value": "1",
+                    "active": true
+                  },
+                  {
+                    "key": "limit",
+                    "value": "10",
+                    "active": true
+                  }
+                ],
+                "headers": [],
+                "preRequestScript": "",
+                "testScript": "",
+                "auth": {
+                  "authType": "bearer",
+                  "authActive": true,
+                  "token": "<<token>>"
+                },
+                "body": {
+                  "contentType": null,
+                  "body": null
+                }
+              },
+              {
+                "v": "1",
                 "name": "Owner Accepts Purchase Request",
                 "method": "PATCH",
                 "endpoint": "<<baseUrl>>/purchase-requests/<<requestId>>/status",
@@ -1177,6 +1358,514 @@
                 "auth": {
                   "authType": "bearer",
                   "token": "<<token>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": null,
+                  "body": null
+                }
+              },
+              {
+                "v": "1",
+                "name": "View Current Property Ownership (Singular Alias)",
+                "method": "GET",
+                "endpoint": "<<baseUrl>>/property/<<propertyId>>/ownership",
+                "params": [],
+                "headers": [],
+                "preRequestScript": "",
+                "testScript": "",
+                "auth": {
+                  "authType": "bearer",
+                  "authActive": true,
+                  "token": "<<token>>"
+                },
+                "body": {
+                  "contentType": null,
+                  "body": null
+                }
+              }
+            ],
+            "auth": {
+              "authType": "inherit",
+              "authActive": true
+            },
+            "headers": []
+          }
+        ],
+        "requests": [],
+        "auth": {
+          "authType": "inherit",
+          "authActive": true
+        },
+        "headers": []
+      },
+      {
+        "v": 2,
+        "name": "6. Maintenance Management",
+        "folders": [
+          {
+            "v": 2,
+            "name": "Property Owner",
+            "folders": [],
+            "requests": [
+              {
+                "v": "1",
+                "name": "Get All Maintenance Categories",
+                "method": "GET",
+                "endpoint": "<<baseUrl>>/maintenance/categories",
+                "params": [],
+                "headers": [],
+                "preRequestScript": "",
+                "testScript": "",
+                "auth": {
+                  "authType": "none",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": null,
+                  "body": null
+                }
+              },
+              {
+                "v": "1",
+                "name": "Create Maintenance Request",
+                "method": "POST",
+                "endpoint": "<<baseUrl>>/maintenance/requests",
+                "params": [],
+                "headers": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "active": true
+                  }
+                ],
+                "preRequestScript": "",
+                "testScript": "if (pw.response.status === 201) {\n  const res = JSON.parse(pw.response.body);\n  if (res.data && res.data.id) pw.env.set(\"maintenanceRequestId\", String(res.data.id));\n}",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<token>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": "application/json",
+                  "body": "{\n  \"property_id\": 1,\n  \"category_id\": 1,\n  \"title\": \"Bathroom water leakage\",\n  \"description\": \"Water is leaking from the bathroom ceiling continuously.\",\n  \"priority\": \"high\"\n}"
+                }
+              },
+              {
+                "v": "1",
+                "name": "Get Owner's Maintenance Requests",
+                "method": "GET",
+                "endpoint": "<<baseUrl>>/maintenance/requests/my-requests?page=1&limit=10",
+                "params": [
+                  {
+                    "key": "page",
+                    "value": "1",
+                    "active": true
+                  },
+                  {
+                    "key": "limit",
+                    "value": "10",
+                    "active": true
+                  },
+                  {
+                    "key": "status",
+                    "value": "pending",
+                    "active": false
+                  }
+                ],
+                "headers": [],
+                "preRequestScript": "",
+                "testScript": "",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<token>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": null,
+                  "body": null
+                }
+              },
+              {
+                "v": "1",
+                "name": "Get Maintenance Request Details",
+                "method": "GET",
+                "endpoint": "<<baseUrl>>/maintenance/requests/<<maintenanceRequestId>>",
+                "params": [],
+                "headers": [],
+                "preRequestScript": "",
+                "testScript": "",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<token>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": null,
+                  "body": null
+                }
+              },
+              {
+                "v": "1",
+                "name": "Cancel Pending Maintenance Request",
+                "method": "PATCH",
+                "endpoint": "<<baseUrl>>/maintenance/requests/<<maintenanceRequestId>>/cancel",
+                "params": [],
+                "headers": [],
+                "preRequestScript": "",
+                "testScript": "",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<token>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": null,
+                  "body": null
+                }
+              }
+            ],
+            "auth": {
+              "authType": "inherit",
+              "authActive": true
+            },
+            "headers": []
+          },
+          {
+            "v": 2,
+            "name": "Facility Manager",
+            "folders": [],
+            "requests": [
+              {
+                "v": "1",
+                "name": "Get Company Property Requests",
+                "method": "GET",
+                "endpoint": "<<baseUrl>>/maintenance/company/requests?page=1&limit=10",
+                "params": [
+                  {
+                    "key": "page",
+                    "value": "1",
+                    "active": true
+                  },
+                  {
+                    "key": "limit",
+                    "value": "10",
+                    "active": true
+                  },
+                  {
+                    "key": "status",
+                    "value": "pending",
+                    "active": false
+                  }
+                ],
+                "headers": [],
+                "preRequestScript": "",
+                "testScript": "",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<facilityToken>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": null,
+                  "body": null
+                }
+              },
+              {
+                "v": "1",
+                "name": "Get Company Request Details",
+                "method": "GET",
+                "endpoint": "<<baseUrl>>/maintenance/company/requests/<<maintenanceRequestId>>",
+                "params": [],
+                "headers": [],
+                "preRequestScript": "",
+                "testScript": "",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<facilityToken>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": null,
+                  "body": null
+                }
+              },
+              {
+                "v": "1",
+                "name": "Get Company Technicians",
+                "method": "GET",
+                "endpoint": "<<baseUrl>>/maintenance/company/technicians",
+                "params": [],
+                "headers": [],
+                "preRequestScript": "",
+                "testScript": "",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<facilityToken>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": null,
+                  "body": null
+                }
+              },
+              {
+                "v": "1",
+                "name": "Assign Request to Technician",
+                "method": "POST",
+                "endpoint": "<<baseUrl>>/maintenance/technician-tasks",
+                "params": [],
+                "headers": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "active": true
+                  }
+                ],
+                "preRequestScript": "",
+                "testScript": "if (pw.response.status === 201) {\n  const res = JSON.parse(pw.response.body);\n  if (res.data && res.data.id) pw.env.set(\"taskId\", String(res.data.id));\n}",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<facilityToken>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": "application/json",
+                  "body": "{\n  \"maintenance_request_id\": 1,\n  \"technician_id\": 1,\n  \"instructions\": \"Fix the bathroom water leakage.\",\n  \"scheduled_at\": \"2026-11-05T10:00:00.000Z\"\n}"
+                }
+              },
+              {
+                "v": "1",
+                "name": "Get All Assigned Tasks Under Company",
+                "method": "GET",
+                "endpoint": "<<baseUrl>>/maintenance/company/technician-tasks?page=1&limit=10",
+                "params": [
+                  {
+                    "key": "page",
+                    "value": "1",
+                    "active": true
+                  },
+                  {
+                    "key": "limit",
+                    "value": "10",
+                    "active": true
+                  },
+                  {
+                    "key": "status",
+                    "value": "assigned",
+                    "active": false
+                  }
+                ],
+                "headers": [],
+                "preRequestScript": "",
+                "testScript": "",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<facilityToken>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": null,
+                  "body": null
+                }
+              },
+              {
+                "v": "1",
+                "name": "Get Task Details (Manager View)",
+                "method": "GET",
+                "endpoint": "<<baseUrl>>/maintenance/technician-tasks/<<taskId>>",
+                "params": [],
+                "headers": [],
+                "preRequestScript": "",
+                "testScript": "",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<facilityToken>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": null,
+                  "body": null
+                }
+              },
+              {
+                "v": "1",
+                "name": "Reassign Task to Another Technician",
+                "method": "PATCH",
+                "endpoint": "<<baseUrl>>/maintenance/technician-tasks/<<taskId>>/reassign",
+                "params": [],
+                "headers": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "active": true
+                  }
+                ],
+                "preRequestScript": "",
+                "testScript": "",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<facilityToken>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": "application/json",
+                  "body": "{\n  \"technician_id\": 2,\n  \"instructions\": \"Reassigned: please inspect emergency valve.\"\n}"
+                }
+              }
+            ],
+            "auth": {
+              "authType": "inherit",
+              "authActive": true
+            },
+            "headers": []
+          },
+          {
+            "v": 2,
+            "name": "Technician",
+            "folders": [],
+            "requests": [
+              {
+                "v": "1",
+                "name": "Get Logged-in Technician Tasks",
+                "method": "GET",
+                "endpoint": "<<baseUrl>>/maintenance/technician-tasks/my-tasks?page=1&limit=10",
+                "params": [
+                  {
+                    "key": "page",
+                    "value": "1",
+                    "active": true
+                  },
+                  {
+                    "key": "limit",
+                    "value": "10",
+                    "active": true
+                  },
+                  {
+                    "key": "status",
+                    "value": "assigned",
+                    "active": false
+                  }
+                ],
+                "headers": [],
+                "preRequestScript": "",
+                "testScript": "",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<techToken>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": null,
+                  "body": null
+                }
+              },
+              {
+                "v": "1",
+                "name": "Get Task Details (Technician View)",
+                "method": "GET",
+                "endpoint": "<<baseUrl>>/maintenance/technician-tasks/<<taskId>>",
+                "params": [],
+                "headers": [],
+                "preRequestScript": "",
+                "testScript": "",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<techToken>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": null,
+                  "body": null
+                }
+              },
+              {
+                "v": "1",
+                "name": "Update Task Status (Accept / Start / Complete)",
+                "method": "PATCH",
+                "endpoint": "<<baseUrl>>/maintenance/technician-tasks/<<taskId>>/status",
+                "params": [],
+                "headers": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "active": true
+                  }
+                ],
+                "preRequestScript": "",
+                "testScript": "",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<techToken>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": "application/json",
+                  "body": "{\n  \"status\": \"in_progress\",\n  \"remarks\": \"Started repairing the bathroom leakage.\"\n}"
+                }
+              },
+              {
+                "v": "1",
+                "name": "Upload Task Media (Before / During / After)",
+                "method": "POST",
+                "endpoint": "<<baseUrl>>/maintenance/technician-tasks/<<taskId>>/media",
+                "params": [],
+                "headers": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "active": true
+                  }
+                ],
+                "preRequestScript": "",
+                "testScript": "",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<techToken>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": "application/json",
+                  "body": "{\n  \"stage\": \"during\"\n}"
+                }
+              },
+              {
+                "v": "1",
+                "name": "Get Task Media",
+                "method": "GET",
+                "endpoint": "<<baseUrl>>/maintenance/technician-tasks/<<taskId>>/media",
+                "params": [
+                  {
+                    "key": "stage",
+                    "value": "during",
+                    "active": false
+                  }
+                ],
+                "headers": [],
+                "preRequestScript": "",
+                "testScript": "",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<techToken>>",
+                  "authActive": true
+                },
+                "body": {
+                  "contentType": null,
+                  "body": null
+                }
+              },
+              {
+                "v": "1",
+                "name": "Get Task Status History",
+                "method": "GET",
+                "endpoint": "<<baseUrl>>/maintenance/technician-tasks/<<taskId>>/history",
+                "params": [],
+                "headers": [],
+                "preRequestScript": "",
+                "testScript": "",
+                "auth": {
+                  "authType": "bearer",
+                  "token": "<<techToken>>",
                   "authActive": true
                 },
                 "body": {

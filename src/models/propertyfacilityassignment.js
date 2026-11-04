@@ -26,6 +26,11 @@ module.exports = (sequelize, DataTypes) => {
         as: "assignedBy",
       });
 
+      PropertyFacilityAssignment.hasMany(models.MaintenanceRequest, {
+        foreignKey: "facility_assignment_id",
+        as: "maintenanceRequests",
+      });
+
 
     }
   }

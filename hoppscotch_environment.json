@@ -50,6 +50,31 @@
       "key": "paymentId",
       "value": "1",
       "secret": false
+    },
+    {
+      "key": "technicianId",
+      "value": "1",
+      "secret": false
+    },
+    {
+      "key": "techToken",
+      "value": "",
+      "secret": true
+    },
+    {
+      "key": "maintenanceRequestId",
+      "value": "1",
+      "secret": false
+    },
+    {
+      "key": "taskId",
+      "value": "1",
+      "secret": false
+    },
+    {
+      "key": "categoryId",
+      "value": "1",
+      "secret": false
     }
   ]
 }

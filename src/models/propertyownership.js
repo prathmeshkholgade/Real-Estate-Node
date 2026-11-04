@@ -19,6 +19,11 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "purchase_request_id",
         as: "purchaseRequest",
       });
+
+      PropertyOwnership.hasMany(models.MaintenanceRequest, {
+        foreignKey: "ownership_id",
+        as: "maintenanceRequests",
+      });
     }
   }
   PropertyOwnership.init({

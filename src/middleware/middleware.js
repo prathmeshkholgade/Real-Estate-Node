@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { User, Roles, FacilityManagementCompany } = require("../models");
+const { User, Roles, FacilityManagementCompany, Technician } = require("../models");
 
 const verifyUser = (req, res, next) => {
     try {
@@ -139,9 +139,45 @@ const verifyFacility = async (req, res, next) => {
     }
 };
 
+const verifyTechnician = async (req, res, next) => {
+    try {
+        if (!req.user || !req.user.id) {
+            return res.status(401).json({
+                success: false,
+                message: "Unauthorized - Authentication required",
+            });
+        }
+
+        const technician = await Technician.findOne({
+            where: { user_id: req.user.id },
+            include: [{ model: User, as: "user" }],
+        });
+
+        if (!technician) {
+            return res.status(403).json({
+                success: false,
+                message: "Forbidden - Only registered technicians can perform this action",
+            });
+        }
+
+        if (technician.status === "inactive") {
+            return res.status(403).json({
+                success: false,
+                message: "Technician account is inactive. Please contact your facility manager.",
+            });
+        }
+
+        req.technician = technician;
+        next();
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     verifyUser,
     verifyBuyer,
     verifyPropertyOwner,
     verifyFacility,
+    verifyTechnician,
 };

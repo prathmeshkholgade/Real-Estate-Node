@@ -847,6 +847,192 @@ const completePurchaseSchema = Joi.object({
     verification_notes: Joi.string().max(1000).allow("", null).optional(),
 });
 
+const createTechnicianSchema = Joi.object({
+    fullName: Joi.string()
+        .min(3)
+        .max(50)
+        .required()
+        .messages({
+            "string.base": "Full name must be a string",
+            "string.empty": "Full name is required",
+            "string.min": "Full name must be at least 3 characters",
+            "string.max": "Full name cannot exceed 50 characters",
+            "any.required": "Full name is required",
+        }),
+    email: Joi.string()
+        .email()
+        .required()
+        .messages({
+            "string.base": "Email must be a string",
+            "string.email": "Invalid email format",
+            "string.empty": "Email is required",
+            "any.required": "Email is required",
+        }),
+    phone: Joi.string()
+        .pattern(/^[0-9]{10}$/)
+        .required()
+        .messages({
+            "string.base": "Phone must be a string",
+            "string.empty": "Phone is required",
+            "string.pattern.base": "Phone must be exactly 10 digits",
+            "any.required": "Phone is required",
+        }),
+    password: Joi.string()
+        .min(6)
+        .max(20)
+        .optional()
+        .allow("", null)
+        .messages({
+            "string.min": "Password must be at least 6 characters",
+            "string.max": "Password cannot exceed 20 characters",
+        }),
+    specialization: Joi.string()
+        .min(2)
+        .max(100)
+        .optional()
+        .allow("", null),
+    experience_years: Joi.number()
+        .integer()
+        .min(0)
+        .max(60)
+        .optional()
+        .allow(null),
+    qualification: Joi.string()
+        .max(100)
+        .optional()
+        .allow("", null),
+    status: Joi.string()
+        .valid("active", "inactive")
+        .default("active")
+        .optional(),
+});
+
+const createMaintenanceRequestSchema = Joi.object({
+    property_id: Joi.number()
+        .integer()
+        .positive()
+        .required()
+        .messages({
+            "number.base": "Property ID must be a number",
+            "any.required": "Property ID is required",
+        }),
+    category_id: Joi.number()
+        .integer()
+        .positive()
+        .required()
+        .messages({
+            "number.base": "Category ID must be a number",
+            "any.required": "Category ID is required",
+        }),
+    title: Joi.string()
+        .min(3)
+        .max(150)
+        .required()
+        .messages({
+            "string.base": "Title must be a string",
+            "string.empty": "Title is required",
+            "string.min": "Title must be at least 3 characters",
+            "string.max": "Title cannot exceed 150 characters",
+            "any.required": "Title is required",
+        }),
+    description: Joi.string()
+        .min(5)
+        .max(2000)
+        .required()
+        .messages({
+            "string.base": "Description must be a string",
+            "string.empty": "Description is required",
+            "string.min": "Description must be at least 5 characters",
+            "string.max": "Description cannot exceed 2000 characters",
+            "any.required": "Description is required",
+        }),
+    priority: Joi.string()
+        .valid("low", "medium", "high", "urgent")
+        .default("medium")
+        .optional(),
+});
+
+const assignTechnicianTaskSchema = Joi.object({
+    maintenance_request_id: Joi.number()
+        .integer()
+        .positive()
+        .required()
+        .messages({
+            "number.base": "Maintenance request ID must be a number",
+            "any.required": "Maintenance request ID is required",
+        }),
+    technician_id: Joi.number()
+        .integer()
+        .positive()
+        .required()
+        .messages({
+            "number.base": "Technician ID must be a number",
+            "any.required": "Technician ID is required",
+        }),
+    instructions: Joi.string()
+        .max(1000)
+        .allow("", null)
+        .optional(),
+    scheduled_at: Joi.date()
+        .iso()
+        .allow(null)
+        .optional(),
+});
+
+const reassignTechnicianTaskSchema = Joi.object({
+    technician_id: Joi.number()
+        .integer()
+        .positive()
+        .required()
+        .messages({
+            "number.base": "Technician ID must be a number",
+            "any.required": "Technician ID is required",
+        }),
+    instructions: Joi.string()
+        .max(1000)
+        .allow("", null)
+        .optional(),
+    scheduled_at: Joi.date()
+        .iso()
+        .allow(null)
+        .optional(),
+});
+
+const updateTaskStatusSchema = Joi.object({
+    status: Joi.string()
+        .valid("accepted", "rejected", "in_progress", "completed")
+        .required()
+        .messages({
+            "any.only": "Status must be one of: accepted, rejected, in_progress, completed",
+            "any.required": "Status is required",
+        }),
+    remarks: Joi.string()
+        .max(1000)
+        .allow("", null)
+        .optional(),
+});
+
+const uploadTaskMediaSchema = Joi.object({
+    stage: Joi.string()
+        .valid("before", "during", "after")
+        .required()
+        .messages({
+            "any.only": "Stage must be one of: before, during, after",
+            "any.required": "Stage is required",
+        }),
+});
+
+const maintenanceIdParamSchema = Joi.object({
+    id: Joi.number()
+        .integer()
+        .positive()
+        .required()
+        .messages({
+            "number.base": "ID must be a number",
+            "any.required": "ID parameter is required",
+        }),
+});
+
 module.exports = {
     userSchema,
     loginSchema,
@@ -864,6 +1050,7 @@ module.exports = {
     createFacilityCompanySchema,
     updateFacilityCompanySchema,
     facilityIdParamSchema,
+    createTechnicianSchema,
     bookSiteVisitSchema,
     updateSiteVisitStatusSchema,
     siteVisitIdParamSchema,
@@ -873,6 +1060,12 @@ module.exports = {
     recordPaymentSchema,
     paymentWebhookSchema,
     completePurchaseSchema,
+    createMaintenanceRequestSchema,
+    assignTechnicianTaskSchema,
+    reassignTechnicianTaskSchema,
+    updateTaskStatusSchema,
+    uploadTaskMediaSchema,
+    maintenanceIdParamSchema,
     FACILITY_STATUSES,
     PROPERTY_TYPES,
     LISTING_TYPES,

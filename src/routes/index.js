@@ -6,6 +6,7 @@ const facilityCompanyRoutes = require("./facility_company_routes.js");
 const siteVisitRoutes = require("./site_visit_routes.js");
 const purchaseRequestRoutes = require("./purchase_request_routes.js");
 const paymentRoutes = require("./payment_routes.js");
+const maintenanceRoutes = require("./maintenance_routes.js");
 const { getOwnerSiteVisits } = require("../controller/site_visit_controller.js");
 const {
     getOwnerPurchaseRequests,
@@ -28,6 +29,8 @@ router.use("/purchase-requests", purchaseRequestRoutes);
 router.get("/owner/purchase-requests", verifyUser, verifyPropertyOwner, asyncWrap(getOwnerPurchaseRequests));
 
 router.use("/payments", paymentRoutes);
+
+router.use("/maintenance", maintenanceRoutes);
 
 router.get("/properties/:id/ownership", verifyUser, validate(propertyIdParamSchema, "params"), asyncWrap(getPropertyOwnership));
 router.get("/property/:id/ownership", verifyUser, validate(propertyIdParamSchema, "params"), asyncWrap(getPropertyOwnership));

@@ -15,18 +15,41 @@ const {
     getFacilityById,
     getFacilityProfile,
     updateFacilityProfile,
+    createTechnician,
+    getFacilityTechnicians,
 } = require("../controller/facility_company_controller");
 const {
     facilityLoginSchema,
     createFacilityCompanySchema,
     updateFacilityCompanySchema,
     facilityIdParamSchema,
+    createTechnicianSchema,
 } = require("../utils/validation");
 
 router.post(
     "/auth/login",
     validate(facilityLoginSchema, "body"),
     asyncWrap(facilityLogin)
+);
+
+router.post(
+    "/create-technicition",
+    verifyFacility,
+    validate(createTechnicianSchema, "body"),
+    asyncWrap(createTechnician)
+);
+
+router.post(
+    "/create-technician",
+    verifyFacility,
+    validate(createTechnicianSchema, "body"),
+    asyncWrap(createTechnician)
+);
+
+router.get(
+    "/technicians",
+    verifyFacility,
+    asyncWrap(getFacilityTechnicians)
 );
 
 router.get(

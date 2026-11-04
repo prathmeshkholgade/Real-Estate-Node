@@ -53,6 +53,31 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "user_id",
         as: "technicianProfile",
       });
+
+      User.hasMany(models.MaintenanceRequest, {
+        foreignKey: "requested_by",
+        as: "createdMaintenanceRequests",
+      });
+
+      User.hasMany(models.TechnicianTask, {
+        foreignKey: "assigned_by",
+        as: "assignedTechnicianTasks",
+      });
+
+      User.hasMany(models.TechnicianTaskMedia, {
+        foreignKey: "uploaded_by",
+        as: "uploadedTechnicianTaskMedia",
+      });
+
+      User.hasMany(models.TechnicianTaskHistory, {
+        foreignKey: "changed_by",
+        as: "technicianTaskHistory",
+      });
+
+      User.hasOne(models.Technician, {
+        foreignKey: "user_id",
+        as: "technician",
+      });
     }
   }
   User.init({

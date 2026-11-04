@@ -40,7 +40,6 @@ router.get(
 );
 
 
-// step 1
 router.post(
     "/",
     verifyUser,

@@ -55,6 +55,11 @@ module.exports = (sequelize, DataTypes) => {
         as: "ownershipHistory",
       });
 
+      Property.hasMany(models.MaintenanceRequest, {
+        foreignKey: "property_id",
+        as: "maintenanceRequests",
+      });
+
     }
   }
   Property.init({

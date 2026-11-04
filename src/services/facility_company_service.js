@@ -5,6 +5,8 @@ const {
     PropertyFacilityAssignment,
     Property,
     User,
+    Technician,
+    sequelize,
 } = require("../models");
 const { generateFacilityToken } = require("../utils/helper");
 const ExpressError = require("../utils/express_error");
@@ -77,7 +79,6 @@ const createFacilityCompanyByOwnerService = async (data, ownerId) => {
         credentials: {
             email: company.email,
             password: plainPassword,
-            // login_url: "/facility/auth/login",
         },
     };
 };
@@ -276,6 +277,136 @@ const updateFacilityProfileService = async (facilityId, updateData) => {
     return safeCompany;
 };
 
+const createTechnicianByFacilityService = async (facilityId, data) => {
+    const {
+        fullName,
+        email,
+        phone,
+        password,
+        specialization,
+        experience_years,
+        qualification,
+        status = "active",
+    } = data;
+
+    const company = await FacilityManagementCompany.findByPk(facilityId);
+    if (!company) {
+        throw new ExpressError(404, "Facility management company not found");
+    }
+
+    if (company.status === "inactive" || company.status === "suspended") {
+        throw new ExpressError(
+            403,
+            `Facility company account is ${company.status}. Please contact administrator.`
+        );
+    }
+
+    const existingUserEmail = await User.findOne({ where: { email } });
+    if (existingUserEmail) {
+        throw new ExpressError(409, "User already exists with this email");
+    }
+
+    const existingUserPhone = await User.findOne({ where: { phone } });
+    if (existingUserPhone) {
+        throw new ExpressError(409, "User already exists with this phone number");
+    }
+
+    const plainPassword =
+        password && password.trim().length >= 6
+            ? password.trim()
+            : `Tech@${Math.floor(100000 + Math.random() * 900000)}`;
+
+    const hashedPassword = await bcrypt.hash(plainPassword, 10);
+
+    const t = await sequelize.transaction();
+
+    try {
+        const user = await User.create(
+            {
+                fullName,
+                email,
+                phone,
+                password: hashedPassword,
+                role_id: 5,
+            },
+            { transaction: t }
+        );
+
+        const technician = await Technician.create(
+            {
+                user_id: user.id,
+                company_id: facilityId,
+                specialization: specialization || null,
+                experience_years: experience_years !== undefined ? experience_years : null,
+                qualification: qualification || null,
+                status: status || "active",
+            },
+            { transaction: t }
+        );
+
+        await t.commit();
+
+        const createdTechnician = await Technician.findByPk(technician.id, {
+            include: [
+                {
+                    model: User,
+                    as: "user",
+                    attributes: ["id", "fullName", "email", "phone", "role_id"],
+                },
+                {
+                    model: FacilityManagementCompany,
+                    as: "company",
+                    attributes: ["id", "company_name", "email", "phone"],
+                },
+            ],
+        });
+
+        return {
+            technician: createdTechnician,
+            credentials: {
+                email: user.email,
+                password: plainPassword,
+            },
+        };
+    } catch (error) {
+        await t.rollback();
+        throw error;
+    }
+};
+
+const getFacilityTechniciansService = async (facilityId, query = {}) => {
+    const page = Math.max(1, Number(query.page) || 1);
+    const limit = Math.min(100, Math.max(1, Number(query.limit) || 10));
+    const offset = (page - 1) * limit;
+
+    const where = { company_id: facilityId };
+    if (query.status) {
+        where.status = query.status;
+    }
+
+    const { count, rows } = await Technician.findAndCountAll({
+        where,
+        limit,
+        offset,
+        order: [["createdAt", "DESC"]],
+        include: [
+            {
+                model: User,
+                as: "user",
+                attributes: ["id", "fullName", "email", "phone", "role_id"],
+            },
+        ],
+    });
+
+    return {
+        total: count,
+        page,
+        limit,
+        totalPages: Math.ceil(count / limit),
+        data: rows,
+    };
+};
+
 module.exports = {
     facilityLoginService,
     createFacilityCompanyByOwnerService,
@@ -284,4 +415,6 @@ module.exports = {
     getFacilityByIdService,
     getFacilityProfileService,
     updateFacilityProfileService,
+    createTechnicianByFacilityService,
+    getFacilityTechniciansService,
 };
