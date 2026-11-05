@@ -2,10 +2,13 @@ const express = require("express");
 const router = express.Router();
 const { asyncWrap } = require("../utils/async_wrap");
 const validate = require("../middleware/validate");
+const upload = require("../middleware/upload");
+
 const {
     verifyUser,
     verifyPropertyOwner,
     verifyFacility,
+    verifyTechnician,
 } = require("../middleware/middleware");
 const {
     facilityLogin,
@@ -17,6 +20,7 @@ const {
     updateFacilityProfile,
     createTechnician,
     getFacilityTechnicians,
+    updateTechnicianProfile,
 } = require("../controller/facility_company_controller");
 const {
     facilityLoginSchema,
@@ -51,6 +55,7 @@ router.get(
     verifyFacility,
     asyncWrap(getFacilityTechnicians)
 );
+
 
 router.get(
     "/profile/me",
@@ -92,5 +97,6 @@ router.get(
     validate(facilityIdParamSchema, "params"),
     asyncWrap(getFacilityById)
 );
+router.patch("/technician/profile", verifyUser, verifyTechnician, upload.single("image"), asyncWrap(updateTechnicianProfile));
 
 module.exports = router;

@@ -407,6 +407,8 @@ const getFacilityTechniciansService = async (facilityId, query = {}) => {
     };
 };
 
+
+
 module.exports = {
     facilityLoginService,
     createFacilityCompanyByOwnerService,
