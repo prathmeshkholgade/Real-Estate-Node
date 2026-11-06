@@ -11,7 +11,7 @@ const s3 = require("../config/s3");
 const BUCKET = process.env.AWS_S3_BUCKET;
 
 
-const uploadFile = async (file, folder = "properties/images") => {
+const uploadFileToS3 = async (file, folder = "properties/images") => {
     const fileName = `${folder}/${Date.now()}-${file.originalname}`;
 
     const command = new PutObjectCommand({
@@ -27,7 +27,7 @@ const uploadFile = async (file, folder = "properties/images") => {
 };
 
 
-const getFileUrl = async (key) => {
+const getS3FileUrl = async (key) => {
     const command = new GetObjectCommand({
         Bucket: BUCKET,
         Key: key,
@@ -39,7 +39,7 @@ const getFileUrl = async (key) => {
 };
 
 
-const deleteFile = async (key) => {
+const deleteS3File = async (key) => {
     const command = new DeleteObjectCommand({
         Bucket: BUCKET,
         Key: key,
@@ -49,7 +49,7 @@ const deleteFile = async (key) => {
 };
 
 module.exports = {
-    uploadFile,
-    getFileUrl,
-    deleteFile,
+    uploadFileToS3,
+    getS3FileUrl,
+    deleteS3File,
 };

@@ -8,6 +8,7 @@ const {
     updateFacilityProfileService,
     createTechnicianByFacilityService,
     getFacilityTechniciansService,
+    updateTechnicianProfileService,
 } = require("../services/facility_company_service");
 const { uploadFile, getFileUrl } = require("../services/s3.service");
 
@@ -107,23 +108,22 @@ const getFacilityTechnicians = async (req, res) => {
 };
 
 const updateTechnicianProfile = async (req, res) => {
-    console.log(req.file);
     if (!req.file) {
         return res.status(400).json({
             message: "Please upload a file",
         });
     }
-    const key = await uploadFile(req.file);
 
-    const url = await getFileUrl(key);
+    const result = await updateTechnicianProfileService(
+        req.user.id,
+        req.file
+    );
 
-    return res.status(201).json({
-        message: "File uploaded successfully",
-        key,
-        url,
+    return res.status(200).json({
+        message: "Technician profile updated successfully",
+        profile_image: result.url,
     });
-
-}
+};
 
 module.exports = {
     facilityLogin,

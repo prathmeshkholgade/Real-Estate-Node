@@ -10,6 +10,7 @@ const {
 } = require("../models");
 const { generateFacilityToken } = require("../utils/helper");
 const ExpressError = require("../utils/express_error");
+const { uploadFileToS3, getS3FileUrl, deleteS3File } = require("./s3.service");
 
 const facilityLoginService = async (email, password) => {
     const company = await FacilityManagementCompany.findOne({
@@ -407,8 +408,43 @@ const getFacilityTechniciansService = async (facilityId, query = {}) => {
     };
 };
 
+const updateTechnicianProfileService = async (userId, file) => {
 
+    const technician = await Technician.findOne({
+        where: {
+            user_id: userId,
+        },
+    });
 
+    if (!technician) {
+        throw new ExpressError(404, "Technician does not exist");
+    }
+
+    const oldKey = technician.profile_image;
+
+    const key = await uploadFileToS3(file, "technicians/profile");
+
+    try {
+        await technician.update({
+            profile_image: key,
+        });
+    } catch (error) {
+        await deleteS3File(key);
+        throw error;
+    }
+
+    if (oldKey) {
+        await deleteS3File(oldKey);
+    }
+
+    const url = await getS3FileUrl(key);
+
+    return {
+        technician,
+        key,
+        url,
+    };
+};
 module.exports = {
     facilityLoginService,
     createFacilityCompanyByOwnerService,
@@ -419,4 +455,5 @@ module.exports = {
     updateFacilityProfileService,
     createTechnicianByFacilityService,
     getFacilityTechniciansService,
+    updateTechnicianProfileService
 };
