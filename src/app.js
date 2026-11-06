@@ -10,6 +10,13 @@ app.use(express.urlencoded({
     limit: "10mb",
 }));
 
+
+
+app.get("/cicd", (req, res) => {
+    res.send("ci/cd pipline is working");
+});
+
+
 app.get("/", (req, res) => {
     res.send("working");
 });
