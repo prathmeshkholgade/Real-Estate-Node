@@ -11,6 +11,7 @@ const {
 const { generateFacilityToken } = require("../utils/helper");
 const ExpressError = require("../utils/express_error");
 const { uploadFileToS3, getS3FileUrl, deleteS3File } = require("./s3.service");
+const logger = require("../utils/logger");
 
 const facilityLoginService = async (email, password) => {
     const company = await FacilityManagementCompany.findOne({
