@@ -20,7 +20,8 @@
     "jsonwebtoken": "^9.0.3",
     "multer": "^2.5.0",
     "mysql2": "^3.24.6",
-    "sequelize": "^6.37.8"
+    "sequelize": "^6.37.8",
+    "winston": "^3.19.0"
   },
   "devDependencies": {
     "sequelize-cli": "^6.6.5"

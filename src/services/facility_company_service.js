@@ -410,34 +410,70 @@ const getFacilityTechniciansService = async (facilityId, query = {}) => {
 
 const updateTechnicianProfileService = async (userId, file) => {
 
+    logger.info("========== UPDATE TECHNICIAN PROFILE START ==========");
+    logger.info(`User ID: ${userId}`);
+    logger.info(`File received: ${file ? file.originalname : "No file"}`);
+
     const technician = await Technician.findOne({
         where: {
             user_id: userId,
         },
     });
 
+    logger.info(`Technician found: ${!!technician}`);
+
     if (!technician) {
+        logger.error(`Technician not found for user_id: ${userId}`);
         throw new ExpressError(404, "Technician does not exist");
     }
 
+    logger.info(`Technician ID: ${technician.id}`);
+    logger.info(`Old profile image: ${technician.profile_image}`);
+
     const oldKey = technician.profile_image;
+
+    // Upload new image
+    logger.info("Uploading new image to S3...");
 
     const key = await uploadFileToS3(file, "technicians/profile");
 
+    logger.info(`New S3 key: ${key}`);
+
     try {
-        await technician.update({
+
+        logger.info("Updating technician database record...");
+
+        const [affectedRows] = await technician.update({
             profile_image: key,
-        });
+        }).then(result => [1, result]);
+
+        logger.info(`Database update completed. Technician ID: ${affectedRows}`);
+
+        // Fetch updated record from database
+        const updatedTechnician = await Technician.findByPk(technician.id);
+
+        logger.info(`Updated profile image from DB: ${updatedTechnician?.profile_image}`);
+
     } catch (error) {
+
+        logger.error(`Database update failed: ${error.message}`);
+
         await deleteS3File(key);
+
         throw error;
     }
 
+    // Delete previous image
     if (oldKey) {
+        logger.info(`Deleting old S3 image: ${oldKey}`);
         await deleteS3File(oldKey);
+        logger.info("Old S3 image deleted successfully");
     }
 
     const url = await getS3FileUrl(key);
+
+    logger.info("Technician profile updated successfully");
+    logger.info("========== UPDATE TECHNICIAN PROFILE END ==========");
 
     return {
         technician,
