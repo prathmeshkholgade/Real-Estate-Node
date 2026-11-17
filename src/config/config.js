@@ -11,9 +11,24 @@ const config = {
     host: process.env.HOST,
     dialect: process.env.DIALECT,
   },
-  production :{
-    
+  production: {
+
   }
 };
 
 module.exports = config;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

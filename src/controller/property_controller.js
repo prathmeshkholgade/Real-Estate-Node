@@ -1,7 +1,7 @@
-const { createPropertyBasicInfoService, updatePropertyBasicInfoService, upsertPropertyDetailsService, upsertPropertyConfigurationService, addPropertyMediaService, addPropertyDocumentsService, getPropertyByIdService, getAllPropertiesService } = require("../services/property_service");
+const propertyService = require("../services/property_service");
 
 const getAllProperties = async (req, res) => {
-    const result = await getAllPropertiesService(
+    const result = await propertyService.getAllProperties(
         req.user.id,
         req.query
     );
@@ -9,12 +9,12 @@ const getAllProperties = async (req, res) => {
     return res.status(200).json({
         success: true,
         message: "Properties fetched successfully",
-        data: result
+        data: result,
     });
 };
 
 const getPropertyById = async (req, res) => {
-    const property = await getPropertyByIdService(
+    const property = await propertyService.getPropertyById(
         req.user.id,
         req.params.id
     );
@@ -27,7 +27,7 @@ const getPropertyById = async (req, res) => {
 };
 
 const createPropertyBasicInfo = async (req, res) => {
-    const property = await createPropertyBasicInfoService(
+    const property = await propertyService.createPropertyBasicInfo(
         req.body,
         req.user.id
     );
@@ -47,7 +47,7 @@ const createPropertyBasicInfo = async (req, res) => {
 const updatePropertyBasicInfo = async (req, res) => {
     const { id } = req.params;
 
-    const property = await updatePropertyBasicInfoService(
+    const property = await propertyService.updatePropertyBasicInfo(
         id,
         req.body,
         req.user.id
@@ -73,7 +73,7 @@ const updatePropertyBasicInfo = async (req, res) => {
 };
 
 const upsertPropertyDetails = async (req, res) => {
-    const result = await upsertPropertyDetailsService(
+    const result = await propertyService.upsertPropertyDetails(
         req.params.id,
         req.body,
         req.user.id
@@ -97,13 +97,12 @@ const upsertPropertyDetails = async (req, res) => {
             details: detail,
         },
     });
-}
-
+};
 
 const upsertPropertyConfiguration = async (req, res) => {
     const { id } = req.params;
 
-    const result = await upsertPropertyConfigurationService(
+    const result = await propertyService.upsertPropertyConfiguration(
         id,
         req.user.id,
         req.body
@@ -124,7 +123,11 @@ const upsertPropertyConfiguration = async (req, res) => {
 };
 
 const addPropertyMedia = async (req, res) => {
-    const media = await addPropertyMediaService(req.params.id, req.user.id, req.files);
+    const media = await propertyService.addPropertyMedia(
+        req.params.id,
+        req.user.id,
+        req.files
+    );
 
     return res.status(201).json({
         success: true,
@@ -133,18 +136,19 @@ const addPropertyMedia = async (req, res) => {
     });
 };
 
-
 const addPropertyDocuments = async (req, res) => {
+    const documents = await propertyService.addPropertyDocuments(
+        req.params.id,
+        req.user.id,
+        req.files.documents
+    );
 
-    const documents = await addPropertyDocumentsService(req.params.id, req.user.id, req.files.documents);
     return res.status(201).json({
         success: true,
         message: "Documents uploaded successfully",
         data: documents,
     });
-
 };
-
 
 module.exports = {
     getPropertyById,
@@ -154,6 +158,5 @@ module.exports = {
     upsertPropertyConfiguration,
     addPropertyMedia,
     addPropertyDocuments,
-    getPropertyById,
-    getAllProperties
+    getAllProperties,
 };

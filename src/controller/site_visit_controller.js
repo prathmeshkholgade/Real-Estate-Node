@@ -1,14 +1,7 @@
-const {
-    bookSiteVisitService,
-    getBuyerVisitsService,
-    getSiteVisitByIdService,
-    cancelSiteVisitService,
-    getOwnerSiteVisitsService,
-    updateSiteVisitStatusService,
-} = require("../services/site_visit_service");
+const siteVisitService = require("../services/site_visit_service");
 
 const bookSiteVisit = async (req, res) => {
-    const visit = await bookSiteVisitService(req.user.id, req.body);
+    const visit = await siteVisitService.bookSiteVisit(req.user.id, req.body);
 
     return res.status(201).json({
         success: true,
@@ -18,7 +11,7 @@ const bookSiteVisit = async (req, res) => {
 };
 
 const getBuyerVisits = async (req, res) => {
-    const result = await getBuyerVisitsService(req.user.id, req.query);
+    const result = await siteVisitService.getBuyerVisits(req.user.id, req.query);
 
     return res.status(200).json({
         success: true,
@@ -28,7 +21,7 @@ const getBuyerVisits = async (req, res) => {
 };
 
 const getSiteVisitById = async (req, res) => {
-    const visit = await getSiteVisitByIdService(req.params.id, req.user.id);
+    const visit = await siteVisitService.getSiteVisitById(req.params.id, req.user.id);
 
     return res.status(200).json({
         success: true,
@@ -38,7 +31,7 @@ const getSiteVisitById = async (req, res) => {
 };
 
 const cancelSiteVisit = async (req, res) => {
-    const visit = await cancelSiteVisitService(req.params.id, req.user.id);
+    const visit = await siteVisitService.cancelSiteVisit(req.params.id, req.user.id);
 
     return res.status(200).json({
         success: true,
@@ -48,7 +41,7 @@ const cancelSiteVisit = async (req, res) => {
 };
 
 const getOwnerSiteVisits = async (req, res) => {
-    const result = await getOwnerSiteVisitsService(req.user.id, req.query);
+    const result = await siteVisitService.getOwnerSiteVisits(req.user.id, req.query);
 
     return res.status(200).json({
         success: true,
@@ -58,7 +51,7 @@ const getOwnerSiteVisits = async (req, res) => {
 };
 
 const updateSiteVisitStatus = async (req, res) => {
-    const visit = await updateSiteVisitStatusService(
+    const visit = await siteVisitService.updateSiteVisitStatus(
         req.params.id,
         req.user.id,
         req.body
@@ -79,4 +72,3 @@ module.exports = {
     getOwnerSiteVisits,
     updateSiteVisitStatus,
 };
-

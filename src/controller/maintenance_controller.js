@@ -1,24 +1,7 @@
-const {
-    getMaintenanceCategoriesService,
-    createMaintenanceRequestService,
-    getOwnerMaintenanceRequestsService,
-    getMaintenanceRequestByIdService,
-    cancelMaintenanceRequestService,
-    getCompanyMaintenanceRequestsService,
-    getCompanyTechniciansService,
-    assignTechnicianTaskService,
-    getCompanyTechnicianTasksService,
-    getTechnicianTaskByIdService,
-    reassignTechnicianTaskService,
-    getTechnicianMyTasksService,
-    updateTechnicianTaskStatusService,
-    uploadTechnicianTaskMediaService,
-    getTechnicianTaskMediaService,
-    getTechnicianTaskHistoryService,
-} = require("../services/maintenance_service");
+const maintenanceService = require("../services/maintenance_service");
 
 const getMaintenanceCategories = async (req, res) => {
-    const categories = await getMaintenanceCategoriesService();
+    const categories = await maintenanceService.getMaintenanceCategories();
 
     return res.status(200).json({
         success: true,
@@ -41,7 +24,7 @@ const createMaintenanceRequest = async (req, res) => {
         files = [req.file];
     }
 
-    const request = await createMaintenanceRequestService(
+    const request = await maintenanceService.createMaintenanceRequest(
         req.user.id,
         req.body,
         files
@@ -55,7 +38,7 @@ const createMaintenanceRequest = async (req, res) => {
 };
 
 const getOwnerMaintenanceRequests = async (req, res) => {
-    const result = await getOwnerMaintenanceRequestsService(req.user.id, req.query);
+    const result = await maintenanceService.getOwnerMaintenanceRequests(req.user.id, req.query);
 
     return res.status(200).json({
         success: true,
@@ -65,7 +48,7 @@ const getOwnerMaintenanceRequests = async (req, res) => {
 };
 
 const getMaintenanceRequestById = async (req, res) => {
-    const request = await getMaintenanceRequestByIdService(
+    const request = await maintenanceService.getMaintenanceRequestById(
         req.params.id,
         req.user,
         req.facility
@@ -79,7 +62,7 @@ const getMaintenanceRequestById = async (req, res) => {
 };
 
 const cancelMaintenanceRequest = async (req, res) => {
-    const cancelled = await cancelMaintenanceRequestService(req.params.id, req.user.id);
+    const cancelled = await maintenanceService.cancelMaintenanceRequest(req.params.id, req.user.id);
 
     return res.status(200).json({
         success: true,
@@ -89,7 +72,7 @@ const cancelMaintenanceRequest = async (req, res) => {
 };
 
 const getCompanyMaintenanceRequests = async (req, res) => {
-    const result = await getCompanyMaintenanceRequestsService(
+    const result = await maintenanceService.getCompanyMaintenanceRequests(
         req.facility.id,
         req.query
     );
@@ -102,7 +85,7 @@ const getCompanyMaintenanceRequests = async (req, res) => {
 };
 
 const getCompanyTechnicians = async (req, res) => {
-    const technicians = await getCompanyTechniciansService(req.facility.id);
+    const technicians = await maintenanceService.getCompanyTechnicians(req.facility.id);
 
     return res.status(200).json({
         success: true,
@@ -112,7 +95,7 @@ const getCompanyTechnicians = async (req, res) => {
 };
 
 const assignTechnicianTask = async (req, res) => {
-    const task = await assignTechnicianTaskService(req.facility.id, req.body);
+    const task = await maintenanceService.assignTechnicianTask(req.facility.id, req.body);
 
     return res.status(201).json({
         success: true,
@@ -122,7 +105,7 @@ const assignTechnicianTask = async (req, res) => {
 };
 
 const getCompanyTechnicianTasks = async (req, res) => {
-    const result = await getCompanyTechnicianTasksService(
+    const result = await maintenanceService.getCompanyTechnicianTasks(
         req.facility.id,
         req.query
     );
@@ -135,7 +118,7 @@ const getCompanyTechnicianTasks = async (req, res) => {
 };
 
 const getTechnicianTaskById = async (req, res) => {
-    const task = await getTechnicianTaskByIdService(
+    const task = await maintenanceService.getTechnicianTaskById(
         req.params.id,
         req.user,
         req.facility,
@@ -150,7 +133,7 @@ const getTechnicianTaskById = async (req, res) => {
 };
 
 const reassignTechnicianTask = async (req, res) => {
-    const updated = await reassignTechnicianTaskService(
+    const updated = await maintenanceService.reassignTechnicianTask(
         req.params.id,
         req.facility.id,
         req.body
@@ -164,7 +147,7 @@ const reassignTechnicianTask = async (req, res) => {
 };
 
 const getTechnicianMyTasks = async (req, res) => {
-    const result = await getTechnicianMyTasksService(
+    const result = await maintenanceService.getTechnicianMyTasks(
         req.technician.id,
         req.query
     );
@@ -177,7 +160,7 @@ const getTechnicianMyTasks = async (req, res) => {
 };
 
 const updateTechnicianTaskStatus = async (req, res) => {
-    const updated = await updateTechnicianTaskStatusService(
+    const updated = await maintenanceService.updateTechnicianTaskStatus(
         req.params.id,
         req.technician.id,
         req.user.id,
@@ -205,7 +188,7 @@ const uploadTechnicianTaskMedia = async (req, res) => {
         files = [req.file];
     }
 
-    const uploaded = await uploadTechnicianTaskMediaService(
+    const uploaded = await maintenanceService.uploadTechnicianTaskMedia(
         req.params.id,
         req.technician.id,
         req.user.id,
@@ -221,7 +204,7 @@ const uploadTechnicianTaskMedia = async (req, res) => {
 };
 
 const getTechnicianTaskMedia = async (req, res) => {
-    const media = await getTechnicianTaskMediaService(req.params.id, req.query);
+    const media = await maintenanceService.getTechnicianTaskMedia(req.params.id, req.query);
 
     return res.status(200).json({
         success: true,
@@ -231,7 +214,7 @@ const getTechnicianTaskMedia = async (req, res) => {
 };
 
 const getTechnicianTaskHistory = async (req, res) => {
-    const history = await getTechnicianTaskHistoryService(req.params.id);
+    const history = await maintenanceService.getTechnicianTaskHistory(req.params.id);
 
     return res.status(200).json({
         success: true,
@@ -258,4 +241,3 @@ module.exports = {
     getTechnicianTaskMedia,
     getTechnicianTaskHistory,
 };
-

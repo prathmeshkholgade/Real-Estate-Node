@@ -1,20 +1,8 @@
-const {
-    facilityLoginService,
-    createFacilityCompanyByOwnerService,
-    getAllFacilitiesService,
-    getMyCreatedFacilitiesService,
-    getFacilityByIdService,
-    getFacilityProfileService,
-    updateFacilityProfileService,
-    createTechnicianByFacilityService,
-    getFacilityTechniciansService,
-    updateTechnicianProfileService,
-} = require("../services/facility_company_service");
-const { uploadFile, getFileUrl } = require("../services/s3.service");
+const facilityCompanyService = require("../services/facility_company_service");
 
 const facilityLogin = async (req, res) => {
     const { email, password } = req.body;
-    const result = await facilityLoginService(email, password);
+    const result = await facilityCompanyService.facilityLogin(email, password);
 
     return res.status(200).json({
         success: true,
@@ -25,7 +13,7 @@ const facilityLogin = async (req, res) => {
 };
 
 const createFacilityCompany = async (req, res) => {
-    const result = await createFacilityCompanyByOwnerService(req.body, req.user.id);
+    const result = await facilityCompanyService.createFacilityCompanyByOwner(req.body, req.user.id);
 
     return res.status(201).json({
         success: true,
@@ -36,18 +24,17 @@ const createFacilityCompany = async (req, res) => {
 };
 
 const getAllFacilities = async (req, res) => {
-    const result = await getAllFacilitiesService(req.query);
+    const result = await facilityCompanyService.getAllFacilities(req.query);
 
     return res.status(200).json({
         success: true,
         message: "Facility management companies retrieved successfully",
         data: result,
     });
-
 };
 
 const getMyCreatedFacilities = async (req, res) => {
-    const result = await getMyCreatedFacilitiesService(req.user.id, req.query);
+    const result = await facilityCompanyService.getMyCreatedFacilities(req.user.id, req.query);
 
     return res.status(200).json({
         success: true,
@@ -57,7 +44,7 @@ const getMyCreatedFacilities = async (req, res) => {
 };
 
 const getFacilityById = async (req, res) => {
-    const company = await getFacilityByIdService(req.params.id);
+    const company = await facilityCompanyService.getFacilityById(req.params.id);
 
     return res.status(200).json({
         success: true,
@@ -67,7 +54,7 @@ const getFacilityById = async (req, res) => {
 };
 
 const getFacilityProfile = async (req, res) => {
-    const profile = await getFacilityProfileService(req.facility.id);
+    const profile = await facilityCompanyService.getFacilityProfile(req.facility.id);
 
     return res.status(200).json({
         success: true,
@@ -77,7 +64,7 @@ const getFacilityProfile = async (req, res) => {
 };
 
 const updateFacilityProfile = async (req, res) => {
-    const updated = await updateFacilityProfileService(req.facility.id, req.body);
+    const updated = await facilityCompanyService.updateFacilityProfile(req.facility.id, req.body);
 
     return res.status(200).json({
         success: true,
@@ -87,7 +74,7 @@ const updateFacilityProfile = async (req, res) => {
 };
 
 const createTechnician = async (req, res) => {
-    const result = await createTechnicianByFacilityService(req.facility.id, req.body);
+    const result = await facilityCompanyService.createTechnicianByFacility(req.facility.id, req.body);
 
     return res.status(201).json({
         success: true,
@@ -98,7 +85,7 @@ const createTechnician = async (req, res) => {
 };
 
 const getFacilityTechnicians = async (req, res) => {
-    const result = await getFacilityTechniciansService(req.facility.id, req.query);
+    const result = await facilityCompanyService.getFacilityTechnicians(req.facility.id, req.query);
 
     return res.status(200).json({
         success: true,
@@ -114,7 +101,7 @@ const updateTechnicianProfile = async (req, res) => {
         });
     }
 
-    const result = await updateTechnicianProfileService(
+    const result = await facilityCompanyService.updateTechnicianProfile(
         req.user.id,
         req.file
     );
@@ -135,11 +122,5 @@ module.exports = {
     updateFacilityProfile,
     createTechnician,
     getFacilityTechnicians,
-    updateTechnicianProfile
+    updateTechnicianProfile,
 };
-
-
-
-
-
-

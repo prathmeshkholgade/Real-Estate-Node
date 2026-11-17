@@ -1,17 +1,7 @@
-const {
-    submitPurchaseRequestService,
-    getBuyerPurchaseRequestsService,
-    getOwnerPurchaseRequestsService,
-    getPurchaseRequestByIdService,
-    updatePurchaseRequestStatusService,
-    recordPaymentService,
-    processPaymentWebhookService,
-    completePurchaseService,
-    getPropertyOwnershipService,
-} = require("../services/purchase_request_service");
+const purchaseRequestService = require("../services/purchase_request_service");
 
 const submitPurchaseRequest = async (req, res) => {
-    const result = await submitPurchaseRequestService(req.user.id, req.body);
+    const result = await purchaseRequestService.submitPurchaseRequest(req.user.id, req.body);
 
     return res.status(201).json({
         success: true,
@@ -21,7 +11,7 @@ const submitPurchaseRequest = async (req, res) => {
 };
 
 const getBuyerPurchaseRequests = async (req, res) => {
-    const result = await getBuyerPurchaseRequestsService(req.user.id, req.query);
+    const result = await purchaseRequestService.getBuyerPurchaseRequests(req.user.id, req.query);
 
     return res.status(200).json({
         success: true,
@@ -31,7 +21,7 @@ const getBuyerPurchaseRequests = async (req, res) => {
 };
 
 const getOwnerPurchaseRequests = async (req, res) => {
-    const result = await getOwnerPurchaseRequestsService(req.user.id, req.query);
+    const result = await purchaseRequestService.getOwnerPurchaseRequests(req.user.id, req.query);
 
     return res.status(200).json({
         success: true,
@@ -41,7 +31,7 @@ const getOwnerPurchaseRequests = async (req, res) => {
 };
 
 const getPurchaseRequestById = async (req, res) => {
-    const result = await getPurchaseRequestByIdService(req.params.id, req.user.id);
+    const result = await purchaseRequestService.getPurchaseRequestById(req.params.id, req.user.id);
 
     return res.status(200).json({
         success: true,
@@ -51,7 +41,7 @@ const getPurchaseRequestById = async (req, res) => {
 };
 
 const updatePurchaseRequestStatus = async (req, res) => {
-    const result = await updatePurchaseRequestStatusService(
+    const result = await purchaseRequestService.updatePurchaseRequestStatus(
         req.params.id,
         req.user.id,
         req.body
@@ -65,7 +55,7 @@ const updatePurchaseRequestStatus = async (req, res) => {
 };
 
 const recordPayment = async (req, res) => {
-    const result = await recordPaymentService(req.params.id, req.user.id, req.body);
+    const result = await purchaseRequestService.recordPayment(req.params.id, req.user.id, req.body);
 
     return res.status(201).json({
         success: true,
@@ -75,7 +65,7 @@ const recordPayment = async (req, res) => {
 };
 
 const processPaymentWebhook = async (req, res) => {
-    const result = await processPaymentWebhookService(req.body);
+    const result = await purchaseRequestService.processPaymentWebhook(req.body);
 
     return res.status(200).json({
         success: true,
@@ -85,7 +75,7 @@ const processPaymentWebhook = async (req, res) => {
 };
 
 const completePurchase = async (req, res) => {
-    const result = await completePurchaseService(req.params.id, req.user.id, req.body);
+    const result = await purchaseRequestService.completePurchase(req.params.id, req.user.id, req.body);
 
     return res.status(200).json({
         success: true,
@@ -95,7 +85,7 @@ const completePurchase = async (req, res) => {
 };
 
 const getPropertyOwnership = async (req, res) => {
-    const result = await getPropertyOwnershipService(req.params.id, req.user.id);
+    const result = await purchaseRequestService.getPropertyOwnership(req.params.id, req.user.id);
 
     return res.status(200).json({
         success: true,
