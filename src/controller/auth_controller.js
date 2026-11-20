@@ -20,4 +20,40 @@ const logIn = async (req, res, next) => {
     });
 };
 
-module.exports = { createUser, logIn };
+
+const getUserProfile = async (req, res, next) => {
+    const result = await authService.getUserProfile(req.user.id);
+    return res.status(200).json({
+        success: true,
+        message: "profile fetched in successfully",
+        user: { ...result }
+    });
+};
+
+module.exports = { createUser, logIn, getUserProfile };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

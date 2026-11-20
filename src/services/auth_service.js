@@ -84,6 +84,18 @@ class AuthService {
             }
         };
     }
+
+    async getUserProfile(id) {
+        const user = await authRepository.findById(id, {
+            attributes: {
+                exclude: ["password", "updatedAt", "createdAt"]
+            }
+        });
+        if (!user) {
+            return ExpressError(400, "user not found");
+        }
+        return user.toJSON();
+    }
 }
 
 module.exports = new AuthService();
